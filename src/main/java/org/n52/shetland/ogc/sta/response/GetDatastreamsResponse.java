@@ -20,7 +20,7 @@ import org.n52.shetland.ogc.sta.StaConstants;
 import org.n52.shetland.ogc.sos.response.AbstractObservationResponse;
 
 /**
- *
+ * Response to a datastream GET request
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
 public class GetDatastreamsResponse extends AbstractObservationResponse {

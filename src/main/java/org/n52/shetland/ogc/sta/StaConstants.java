@@ -26,10 +26,15 @@ public class StaConstants implements Constructable {
 
     @Deprecated
     private static StaConstants instance;
+    
+    public static final String STA_VERSION_1_0 = "v1.0";
+    
+    public static final String STA_VALUES = "values";
 
-    public static final String STA_RESOURCE_ID = "@iot.id";
-    public static final String STA_RESOURCE_SELF_LINK = "@iot.selfLink";
-    public static final String STA_RESOURCE_NAVIGATION_LINK = "@iot.navigationLink";
+    public static final String STA_ANNOTATION_ID = "@iot.id";
+    public static final String STA_ANNOTATION_COUNT = "@iot.count";
+    public static final String STA_ANNOTATION_SELF_LINK = "@iot.selfLink";
+    public static final String STA_ANNOTATION_NAVIGATION_LINK = "@iot.navigationLink";
 
     public static final String STA_RESOURCE_ENTITY_DATASTREAM = "Datastream";
     public static final String STA_RESOURCE_ENTITY_FEATURE_OF_INTEREST = "FeatureOfInterest";
@@ -80,6 +85,7 @@ public class StaConstants implements Constructable {
     public static final String STA_HTTP_GET_PARAMETERNAME_SENSORS = "Sensors";
     public static final String STA_HTTP_GET_PARAMETERNAME_THINGS = "Things";
 
+      
     @Override
     public void init() {
         StaConstants.instance = this;
