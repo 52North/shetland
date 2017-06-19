@@ -18,79 +18,89 @@ package org.n52.shetland.ogc.sta;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.n52.shetland.ogc.UoM;
 import org.n52.shetland.ogc.om.OmObservationConstellation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SensorThings Datastream Entity
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
-public class StaDatastream {
+public class StaDatastream extends StaAbstractEntity {
 
-    // TODO check if variables have to be 'public' to be encoded
+    private static final Logger LOG = LoggerFactory.getLogger(StaDatastream.class);
 
-    /* generated identifier, unique among entities of this type */
-    private String id;
-    private String selfLink; // http://SERVICEURL/VERSION/Datastreams(ID)
-
-    private String thing; // http://SERVICEURL/VERSION/Things(ID)
-    private String sensor; // http://SERVICEURL/VERSION/Sensors(ID)
-    private String observedProperty; // http://SERVICEURL/VERSION/ObservedProperties(ID)
+    private String thing; // Datastream(this)/Thing
+    private String sensor; // Datastream(this)/Sensor
+    private String observedProperty; // Datastream(this)/ObservedProperty
 
     private String name;
     private String description;
     private String observationType; // ValueCode
-    private String unitOfMeasurement; //JSON_Object
+    private UoM unitOfMeasurement;
     private String observedArea; // GM_Envelope[0..1]
     private String phenomenonTime; // TM_Period[0..1]
     private String resultTime; // TM_Period[0..1]
 
-    private List<StaObservation> observationCollection = new ArrayList<>();
+    private List<StaObservation> observationList = new ArrayList<>();
 
     private OmObservationConstellation observationConstellation;
 
     /**
      * Create a Datastream from the first observation
+     * @param id unique datastream id
      * @param observationConstellation observation constellation to distinguish datastreams
+     * @param observationType type of contained observations
+     * @param unit unit of measurement of contained observations
      * @param observation first observation
      */
-    public StaDatastream(OmObservationConstellation observationConstellation, StaObservation observation) {
+    public StaDatastream(String id, OmObservationConstellation observationConstellation, String observationType, UoM unit, StaObservation observation) {
 
-        this(observationConstellation);
+        this(id, observationConstellation);
+        this.setObservationType(observationType);
+        this.setUnitOfMeasurement(unit);
         addObservation(observation);
     }
 
     /**
      * Create a Datastream from the first observation
+     * @param id unique datastream id
+     * @param observationConstellation observation constellation to distinguish datastreams
+     * @param observationType type of contained observations
+     * @param observation first observation
+     */
+    public StaDatastream(String id, OmObservationConstellation observationConstellation, String observationType, StaObservation observation) {
+
+        this(id, observationConstellation);
+        this.setObservationType(observationType);
+        addObservation(observation);
+    }
+
+    /**
+     * Create a Datastream from the first observation
+     * @param id new and unique ID for this Datastream
      * @param observationConstellation observation constellation to distinguish datastreams
      */
-    public StaDatastream(OmObservationConstellation observationConstellation) {
+    public StaDatastream(String id, OmObservationConstellation observationConstellation) {
+
+        super(id, StaConstants.Entity.Datastream, StaConstants.EntitySet.Datastreams);
 
         this.observationConstellation = observationConstellation;
 
-        // ass there is no datastream type in sos, generate a new but unique id
-        this.id = Integer.toString(observationConstellation.hashCode());
-
-        this.sensor = observationConstellation.getProcedureIdentifier();
+        // TODO optional: expand entity; not used by DatastreamEncoder, yet
+        //this.sensor
         //this.thing
-        this.observedProperty = observationConstellation.getObservablePropertyIdentifier();
-    }
+        //this.observedProperty
 
+        this.name = "automatically generated Datastream";
+        this.description = "automatically generated Datastream";
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getSelfLink() {
-        return selfLink;
-    }
-
-    public void setSelfLink(String selfLink) {
-        this.selfLink = selfLink;
+        // TODO these have to be derived from the contained observations
+        // observedArea
+        // phenomenonTime
+        // resultTime
     }
 
     public String getThing() {
@@ -141,11 +151,11 @@ public class StaDatastream {
         this.observationType = observationType;
     }
 
-    public String getUnitOfMeasurement() {
+    public UoM getUnitOfMeasurement() {
         return unitOfMeasurement;
     }
 
-    public void setUnitOfMeasurement(String unitOfMeasurement) {
+    public void setUnitOfMeasurement(UoM unitOfMeasurement) {
         this.unitOfMeasurement = unitOfMeasurement;
     }
 
@@ -173,16 +183,16 @@ public class StaDatastream {
         this.resultTime = resultTime;
     }
 
-    public List<StaObservation> getObservationCollection() {
-        return observationCollection;
+    public List<StaObservation> getObservationList() {
+        return observationList;
     }
 
-    public OmObservationConstellation getObservationConstellation() {
-        return this.observationConstellation;
+    public void setObservationList(List<StaObservation> observationList) {
+        this.observationList = observationList;
     }
 
-    public void setObservationCollection(List<StaObservation> observationCollection) {
-        this.observationCollection = observationCollection;
+    public boolean isSetObservationList() {
+       return observationList != null && !observationList.isEmpty();
     }
 
     /**
@@ -190,7 +200,11 @@ public class StaDatastream {
      * @param observation the new observation
      */
     public void addObservation(StaObservation observation) {
-
-        this.observationCollection.add(observation);
+        this.observationList.add(observation);
     }
+
+    public OmObservationConstellation getObservationConstellation() {
+        return this.observationConstellation;
+    }
+
 }

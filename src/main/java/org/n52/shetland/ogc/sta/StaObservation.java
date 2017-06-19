@@ -16,62 +16,45 @@
  */
 package org.n52.shetland.ogc.sta;
 
+import java.util.List;
+import java.util.Map;
+import org.n52.shetland.ogc.gml.time.Time;
+import org.n52.shetland.ogc.gml.time.TimeInstant;
+import org.n52.shetland.ogc.gml.time.TimePeriod;
+
 
 /**
  * SensorThings Observation Entity
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
-public class StaObservation {
+public class StaObservation extends StaAbstractEntity {
 
-    // TODO check if variables have to be 'public' to be encoded
-
-    private String id;
-    private String selfLink; // http://SERVICEURL/VERSION/Observations(ID)
-
-    private String phenomenonTime; // TM_Period
+    private Time phenomenonTime;
     private String result;
-    private String resultTime; // TM_Period
-    // TODO optional: multiple result quality entries
-    private String resultQuality; // [0..n]
-    private String validTime; // [0..1]
-    private String parameters; // [0..1]
+    private TimeInstant resultTime;
 
-    // TODO optional: multiple datastreams
-    private String datastream; // 1 mandatory, many optional
-    // TODO optional: multiple features of interest
-    private String featureOfInterest; // 1 mandatory, many optional
+    private List<String> resultQuality; // [0..n]
+
+    private TimePeriod validTime; // [0..1]
+    private Map<String, String> parameters; // [0..1]
+
+    private String datastream;
+    private StaFeatureOfInterest featureOfInterest;
 
     /**
      *
      * @param id observation id
      */
     public StaObservation(String id) {
-        this.id = id;
+        super(id, StaConstants.Entity.Observation, StaConstants.EntitySet.Observations);
     }
 
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getSelfLink() {
-        return selfLink;
-    }
-
-    public void setSelfLink(String selfLink) {
-        this.selfLink = selfLink;
-    }
-
-    public String getPhenomenonTime() {
+    public Time getPhenomenonTime() {
         return phenomenonTime;
     }
 
-    public void setPhenomenonTime(String phenomenonTime) {
+    public void setPhenomenonTime(Time phenomenonTime) {
         this.phenomenonTime = phenomenonTime;
     }
 
@@ -83,36 +66,48 @@ public class StaObservation {
         this.result = result;
     }
 
-    public String getResultTime() {
+    public TimeInstant getResultTime() {
         return resultTime;
     }
 
-    public void setResultTime(String resultTime) {
+    public void setResultTime(TimeInstant resultTime) {
         this.resultTime = resultTime;
     }
 
-    public String getResultQuality() {
+    public List<String> getResultQuality() {
         return resultQuality;
     }
 
-    public void setResultQuality(String resultQuality) {
+    public void setResultQuality(List<String> resultQuality) {
         this.resultQuality = resultQuality;
     }
 
-    public String getValidTime() {
+    public boolean isSetResultQuality() {
+        return resultQuality != null && !resultQuality.isEmpty();
+    }
+
+    public TimePeriod getValidTime() {
         return validTime;
     }
 
-    public void setValidTime(String validTime) {
+    public void setValidTime(TimePeriod validTime) {
         this.validTime = validTime;
     }
 
-    public String getParameters() {
+    public boolean isSetValidTime() {
+        return validTime != null;
+    }
+
+    public Map<String, String> getParameters() {
         return parameters;
     }
 
-    public void setParameters(String parameters) {
+    public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
+    }
+
+    public boolean isSetParameters() {
+        return parameters != null && !parameters.isEmpty();
     }
 
     public String getDatastream() {
@@ -123,13 +118,15 @@ public class StaObservation {
         this.datastream = datastream;
     }
 
-    public String getFeatureOfInterest() {
+    public StaFeatureOfInterest getFeatureOfInterest() {
         return featureOfInterest;
     }
 
-    public void setFeatureOfInterest(String featureOfInterest) {
+    public void setFeatureOfInterest(StaFeatureOfInterest featureOfInterest) {
         this.featureOfInterest = featureOfInterest;
     }
 
-
+    public boolean isSetFeatureOfInterest() {
+        return featureOfInterest != null;
+    }
 }
