@@ -23,6 +23,7 @@ import org.n52.shetland.ogc.sensorML.v20.SmlDataInterface;
 import org.n52.shetland.ogc.sensorML.v20.SmlFeatureOfInterest;
 import org.n52.shetland.ogc.swe.simpleType.SweBoolean;
 import org.n52.shetland.ogc.swe.simpleType.SweCategory;
+import org.n52.shetland.ogc.swe.simpleType.SweCategoryRange;
 import org.n52.shetland.ogc.swe.simpleType.SweCount;
 import org.n52.shetland.ogc.swe.simpleType.SweCountRange;
 import org.n52.shetland.ogc.swe.simpleType.SweObservableProperty;
@@ -31,6 +32,7 @@ import org.n52.shetland.ogc.swe.simpleType.SweQuantityRange;
 import org.n52.shetland.ogc.swe.simpleType.SweText;
 import org.n52.shetland.ogc.swe.simpleType.SweTime;
 import org.n52.shetland.ogc.swe.simpleType.SweTimeRange;
+import org.n52.shetland.ogc.swe.stream.StreamingSweDataArray;
 
 public class AbstractOptionalSweDataComponentVisitor<T, X extends Throwable>
         implements SweDataComponentVisitor<Optional<T>, X> {
@@ -67,6 +69,11 @@ public class AbstractOptionalSweDataComponentVisitor<T, X extends Throwable>
 
     @Override
     public Optional<T> visit(SweCategory component) throws X {
+        return Optional.ofNullable(_visit(component));
+    }
+
+    @Override
+    public Optional<T> visit(SweCategoryRange component) throws X {
         return Optional.ofNullable(_visit(component));
     }
 
@@ -130,6 +137,11 @@ public class AbstractOptionalSweDataComponentVisitor<T, X extends Throwable>
         return Optional.ofNullable(_visit(component));
     }
 
+    @Override
+    public Optional<T> visit(StreamingSweDataArray component) throws X {
+        return Optional.ofNullable(_visit(component));
+    }
+
     protected T _visit(SweField component) throws X {
         return null;
     }
@@ -155,6 +167,10 @@ public class AbstractOptionalSweDataComponentVisitor<T, X extends Throwable>
     }
 
     protected T _visit(SweCategory component) throws X {
+        return null;
+    }
+
+    protected T _visit(SweCategoryRange component) {
         return null;
     }
 
@@ -203,6 +219,10 @@ public class AbstractOptionalSweDataComponentVisitor<T, X extends Throwable>
     }
 
     protected T _visit(SmlFeatureOfInterest component) throws X {
+        return null;
+    }
+
+    protected T _visit(StreamingSweDataArray component) throws X {
         return null;
     }
 

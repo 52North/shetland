@@ -16,14 +16,12 @@
  */
 package org.n52.shetland.ogc.swe;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.n52.shetland.ogc.sensorML.elements.SmlPosition;
 import org.n52.shetland.ogc.sensorML.v20.SmlDataInterface;
 import org.n52.shetland.ogc.sensorML.v20.SmlFeatureOfInterest;
 import org.n52.shetland.ogc.swe.simpleType.SweBoolean;
 import org.n52.shetland.ogc.swe.simpleType.SweCategory;
+import org.n52.shetland.ogc.swe.simpleType.SweCategoryRange;
 import org.n52.shetland.ogc.swe.simpleType.SweCount;
 import org.n52.shetland.ogc.swe.simpleType.SweCountRange;
 import org.n52.shetland.ogc.swe.simpleType.SweObservableProperty;
@@ -32,11 +30,10 @@ import org.n52.shetland.ogc.swe.simpleType.SweQuantityRange;
 import org.n52.shetland.ogc.swe.simpleType.SweText;
 import org.n52.shetland.ogc.swe.simpleType.SweTime;
 import org.n52.shetland.ogc.swe.simpleType.SweTimeRange;
+import org.n52.shetland.ogc.swe.stream.StreamingSweDataArray;
 
 
 public class AbstractVoidSweDataComponentVisitor<X extends Throwable> extends VoidSweDataComponentVisitor<X> {
-
-    private static final Logger log = LoggerFactory.getLogger(AbstractVoidSweDataComponentVisitor.class);
 
     @Override
     protected void _visit(SmlDataInterface component) throws X {
@@ -72,6 +69,10 @@ public class AbstractVoidSweDataComponentVisitor<X extends Throwable> extends Vo
 
     @Override
     protected void _visit(SweCategory component) throws X {
+    }
+
+    @Override
+    protected void _visit(SweCategoryRange component) throws X {
     }
 
     @Override
@@ -112,6 +113,10 @@ public class AbstractVoidSweDataComponentVisitor<X extends Throwable> extends Vo
 
     @Override
     protected void _visit(SmlPosition component) throws X {
+    }
+
+    @Override
+    protected void _visit(StreamingSweDataArray component) throws X {
     }
 
 }

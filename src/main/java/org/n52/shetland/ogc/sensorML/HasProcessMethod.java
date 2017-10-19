@@ -20,7 +20,7 @@ package org.n52.shetland.ogc.sensorML;
  * Interface to indicate if a class has a {@link ProcessMethod}
  *
  * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
- * @since 4.2.0
+ * @since 1.0.0
  *
  */
 public interface HasProcessMethod {
@@ -28,16 +28,18 @@ public interface HasProcessMethod {
     /**
      * @return the method
      */
-    public ProcessMethod getMethod();
+    ProcessMethod getMethod();
 
     /**
      * @param method
      *            the method to set
      */
-    public void setMethod(ProcessMethod method);
+    void setMethod(ProcessMethod method);
 
     /**
      * @return <code>true</code>, if method is not null
      */
-    public boolean isSetMethod();
+    default boolean isSetMethod() {
+        return getMethod() != null;
+    }
 }

@@ -26,6 +26,7 @@ import org.n52.shetland.ogc.om.values.HrefAttributeValue;
 import org.n52.shetland.ogc.om.values.MultiPointCoverage;
 import org.n52.shetland.ogc.om.values.NilTemplateValue;
 import org.n52.shetland.ogc.om.values.ProfileValue;
+import org.n52.shetland.ogc.om.values.QuantityRangeValue;
 import org.n52.shetland.ogc.om.values.QuantityValue;
 import org.n52.shetland.ogc.om.values.RectifiedGridCoverage;
 import org.n52.shetland.ogc.om.values.ReferenceValue;
@@ -33,7 +34,9 @@ import org.n52.shetland.ogc.om.values.SweDataArrayValue;
 import org.n52.shetland.ogc.om.values.TLVTValue;
 import org.n52.shetland.ogc.om.values.TVPValue;
 import org.n52.shetland.ogc.om.values.TextValue;
+import org.n52.shetland.ogc.om.values.TimeRangeValue;
 import org.n52.shetland.ogc.om.values.UnknownValue;
+import org.n52.shetland.ogc.om.values.XmlValue;
 
 /**
  * TODO JavaDoc
@@ -67,6 +70,9 @@ public interface ValueVisitor<T, X extends Exception> {
     T visit(QuantityValue value)
             throws X;
 
+    T visit(QuantityRangeValue value)
+            throws X;
+
     T visit(ReferenceValue value)
             throws X;
 
@@ -97,6 +103,10 @@ public interface ValueVisitor<T, X extends Exception> {
     T visit(UnknownValue value)
             throws X;
 
-//    T visit(XmlValue value)
-//            throws X;
+    T visit(TimeRangeValue value)
+            throws X;
+
+    T visit(XmlValue<?> value)
+            throws X;
+
 }

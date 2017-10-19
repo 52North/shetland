@@ -38,7 +38,7 @@ import org.n52.shetland.util.CollectionHelper;
 /**
  * SOS filter capabilities
  *
- * @since 4.0.0
+ * @since 1.0.0
  */
 public class FilterCapabilities {
     private final SortedSet<QName> spatialOperands = new TreeSet<>(Comparables.qname());
@@ -130,10 +130,10 @@ public class FilterCapabilities {
                                   Map<T, ? extends Collection<QName>> newOperators) {
         operators.clear();
         Optional.ofNullable(newOperators).ifPresent(so -> {
-            so.forEach((temporalOperator, qnames) -> {
+            so.forEach((operator, qnames) -> {
                 TreeSet<QName> set = new TreeSet<>(Comparables.qname());
                 Optional.ofNullable(qnames).ifPresent(set::addAll);
-                operators.put(temporalOperator, set);
+                operators.put(operator, set);
             });
         });
 

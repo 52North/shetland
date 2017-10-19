@@ -26,14 +26,12 @@ import org.n52.shetland.util.JavaHelper;
  *
  * @author Christian Autermann
  */
-public class GmlBaseUnit {
+public class GmlBaseUnit extends AbtractGmd {
 
+    private static final String UCUM_URL = "http://www.opengis.net/def/uom/UCUM/";
     private String id;
-
     private final String identifier;
-
     private final CodeType catalogSymbol;
-
     private final String unitSystem;
 
     public GmlBaseUnit(String id, String identifier, CodeType catalogSymbol, String unitSystem) {
@@ -67,8 +65,7 @@ public class GmlBaseUnit {
     public static GmlBaseUnit uncertaintyEstimation() {
         return new GmlBaseUnit("PercentageUnit",
                 "http://dd.eionet.europa.eu/vocabularies/aq/resultquality/uncertaintyestimation/",
-                new CodeType("%", URI.create("http://www.opengis.net/def/uom/UCUM/")),
-                "http://www.opengis.net/def/uom/UCUM/");
+                new CodeType("%", URI.create(UCUM_URL)), UCUM_URL);
     }
 
 }

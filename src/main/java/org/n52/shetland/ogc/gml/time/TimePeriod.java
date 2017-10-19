@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.format.ISOPeriodFormat;
 
@@ -33,7 +34,8 @@ import org.n52.shetland.util.CollectionHelper;
  *
  * @since 1.0.0
  */
-public class TimePeriod extends Time {
+public class TimePeriod
+        extends Time {
     /**
      * serial number
      */
@@ -51,17 +53,26 @@ public class TimePeriod extends Time {
     /** indeterminate position of endPosition */
     private IndeterminateValue endIndet;
 
-    /** duration value */
-    private Period duration = null; // ISO8601 format
+    /** duration value ISO8601 format */
+    private Period duration;
 
-    /** interval value */
-    private String interval = null; // ISO8601 format
+    /** interval value ISO8601 format */
+    private String interval;
 
     /**
      * default constructor
      *
      */
     public TimePeriod() {
+    }
+
+    /**
+     * Creates a new {@code TimePeriod} from an {@code Interval}.
+     *
+     * @param interval the interval
+     */
+    public TimePeriod(Interval interval) {
+        this(interval.getStart(), interval.getEnd());
     }
 
     /**
@@ -125,13 +136,15 @@ public class TimePeriod extends Time {
      *            indeterminate time value of end position
      * @param duration
      *            duration in ISO8601 format
-     * @param id the optional GML id
+     * @param id
+     *            the optional GML id
      * @throws ParseException
      *             if parsing the time strings of start or end into
      *             java.util.Date failed
      */
-    public TimePeriod(DateTime start, IndeterminateValue startIndet, DateTime end,
-            IndeterminateValue endIndet, String duration, String id) throws ParseException {
+    public TimePeriod(
+            DateTime start, IndeterminateValue startIndet, DateTime end, IndeterminateValue endIndet, String duration,
+            String id) throws ParseException {
         super(id);
         this.start = start;
         this.startIndet = startIndet;
@@ -259,7 +272,6 @@ public class TimePeriod extends Time {
         return end;
     }
 
-
     /**
      * Set end time
      *
@@ -269,6 +281,7 @@ public class TimePeriod extends Time {
     public void setEnd(DateTime end) {
         this.end = end;
     }
+
     /**
      * Get end time, resolving indeterminate value if start is null
      *
@@ -328,7 +341,8 @@ public class TimePeriod extends Time {
     /**
      * Set interval
      *
-     * @param interval the interval
+     * @param interval
+     *            the interval
      */
     public void setInterval(String interval) {
         this.interval = interval;
@@ -363,7 +377,8 @@ public class TimePeriod extends Time {
     /**
      * Extend TimePeriod to contain provided collection of {@link Time}s
      *
-     * @param times the times to contain
+     * @param times
+     *            the times to contain
      */
     public void extendToContain(Collection<Time> times) {
         if (CollectionHelper.isNotEmpty(times)) {
@@ -384,7 +399,7 @@ public class TimePeriod extends Time {
             extendToContain((TimePeriod) time);
         } else {
             String errorMsg = String.format("Received Time type \"%s\" unknown.",
-                Optional.ofNullable(time).map(Object::getClass).map(Class::getName).orElse("null"));
+                    Optional.ofNullable(time).map(Object::getClass).map(Class::getName).orElse("null"));
             throw new IllegalArgumentException(errorMsg);
         }
     }
@@ -418,7 +433,8 @@ public class TimePeriod extends Time {
      * Extend TimePeriod to contain DateTime. Used by other extendToContain
      * methods.
      *
-     * @param time the time to contain
+     * @param time
+     *            the time to contain
      */
     public void extendToContain(DateTime time) {
         if (time != null) {

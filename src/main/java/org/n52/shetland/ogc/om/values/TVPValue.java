@@ -25,17 +25,16 @@ import org.n52.shetland.ogc.gml.time.Time;
 import org.n52.shetland.ogc.gml.time.TimePeriod;
 import org.n52.shetland.ogc.om.TimeValuePair;
 import org.n52.shetland.ogc.om.values.visitor.ValueVisitor;
-import org.n52.shetland.ogc.om.values.visitor.VoidValueVisitor;
-import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.util.CollectionHelper;
 
 /**
  * Multi value representing a time value pairs for observations
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
-public class TVPValue implements MultiValue<List<TimeValuePair>> {
+public class TVPValue
+        implements MultiValue<List<TimeValuePair>> {
 
     /**
      * Mesurement values
@@ -64,7 +63,7 @@ public class TVPValue implements MultiValue<List<TimeValuePair>> {
      * Add time value pair value
      *
      * @param value
-     *              Time value pair value to add
+     *            Time value pair value to add
      */
     public void addValue(TimeValuePair value) {
         this.value.add(value);
@@ -74,7 +73,7 @@ public class TVPValue implements MultiValue<List<TimeValuePair>> {
      * Add time value pair values
      *
      * @param values
-     *               Time value pair values to add
+     *            Time value pair values to add
      */
     public void addValues(List<TimeValuePair> values) {
         this.value.addAll(values);
@@ -83,6 +82,12 @@ public class TVPValue implements MultiValue<List<TimeValuePair>> {
     @Override
     public void setUnit(String unit) {
         this.unit = new UoM(unit);
+    }
+
+    @Override
+    public TVPValue setUnit(UoM unit) {
+        this.unit = unit;
+        return this;
     }
 
     @Override
@@ -96,12 +101,6 @@ public class TVPValue implements MultiValue<List<TimeValuePair>> {
     @Override
     public UoM getUnitObject() {
         return this.unit;
-    }
-
-    @Override
-    public TVPValue setUnit(UoM unit) {
-        this.unit = unit;
-        return this;
     }
 
     @Override

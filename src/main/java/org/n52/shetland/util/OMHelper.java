@@ -22,9 +22,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.n52.janmayen.http.HTTPStatus;
 import org.n52.shetland.ogc.om.OmConstants;
 import org.n52.shetland.ogc.om.features.SfConstants;
@@ -38,6 +35,7 @@ import org.n52.shetland.ogc.om.values.HrefAttributeValue;
 import org.n52.shetland.ogc.om.values.MultiPointCoverage;
 import org.n52.shetland.ogc.om.values.NilTemplateValue;
 import org.n52.shetland.ogc.om.values.ProfileValue;
+import org.n52.shetland.ogc.om.values.QuantityRangeValue;
 import org.n52.shetland.ogc.om.values.QuantityValue;
 import org.n52.shetland.ogc.om.values.RectifiedGridCoverage;
 import org.n52.shetland.ogc.om.values.ReferenceValue;
@@ -45,23 +43,28 @@ import org.n52.shetland.ogc.om.values.SweDataArrayValue;
 import org.n52.shetland.ogc.om.values.TLVTValue;
 import org.n52.shetland.ogc.om.values.TVPValue;
 import org.n52.shetland.ogc.om.values.TextValue;
+import org.n52.shetland.ogc.om.values.TimeRangeValue;
 import org.n52.shetland.ogc.om.values.UnknownValue;
 import org.n52.shetland.ogc.om.values.Value;
+import org.n52.shetland.ogc.om.values.XmlValue;
 import org.n52.shetland.ogc.om.values.visitor.ValueVisitor;
 import org.n52.shetland.ogc.ows.exception.NoApplicableCodeException;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.swe.SweAbstractDataComponent;
+import org.n52.shetland.ogc.swe.SweDataArray;
 import org.n52.shetland.ogc.swe.SweDataRecord;
 import org.n52.shetland.ogc.swe.simpleType.SweBoolean;
 import org.n52.shetland.ogc.swe.simpleType.SweCategory;
 import org.n52.shetland.ogc.swe.simpleType.SweCount;
 import org.n52.shetland.ogc.swe.simpleType.SweQuantity;
 import org.n52.shetland.ogc.swe.simpleType.SweText;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for Observation and Measurement
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
 public final class OMHelper {
@@ -78,9 +81,12 @@ public final class OMHelper {
                 || SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_CURVE.equals(featureType)
                 || SfConstants.SAMPLING_FEAT_TYPE_SF_SAMPLING_SURFACE.equals(featureType)) {
             return SfConstants.NS_SAMS;
-        } else if (SfConstants.FT_SAMPLINGPOINT.equals(featureType) || SfConstants.FT_SAMPLINGCURVE.equals(featureType)
+        } else if (SfConstants.FT_SAMPLINGPOINT.equals(featureType)
+                || SfConstants.FT_SAMPLINGCURVE.equals(featureType)
                 || SfConstants.FT_SAMPLINGSURFACE.equals(featureType)) {
             return SfConstants.NS_SA;
+        } else if (SfConstants.SAMPLING_FEAT_TYPE_SF_SPECIMEN.equals(featureType)) {
+            return SfConstants.NS_SPEC;
         }
         return SfConstants.NS_SAMS;
     }
@@ -98,6 +104,8 @@ public final class OMHelper {
             return OmConstants.OBS_TYPE_CATEGORY_OBSERVATION;
         } else if (component instanceof SweDataRecord) {
             return OmConstants.OBS_TYPE_COMPLEX_OBSERVATION;
+        } else if (component instanceof SweDataArray) {
+            return OmConstants.OBS_TYPE_SWE_ARRAY_OBSERVATION;
         }
         // TODO Check for missing types
         throw new NoApplicableCodeException()
@@ -123,6 +131,8 @@ public final class OMHelper {
             return OmConstants.OBS_TYPE_TRUTH_OBSERVATION;
         } else if (OmConstants.RESULT_MODEL_TEXT_OBSERVATION.equals(resultModel)) {
             return OmConstants.OBS_TYPE_TEXT_OBSERVATION;
+        } else if (OmConstants.RESULT_MODEL_REFERENCE_OBSERVATION.equals(resultModel)) {
+            return OmConstants.OBS_TYPE_REFERENCE_OBSERVATION;
         } else if (OmConstants.RESULT_MODEL_COMPLEX_OBSERVATION.equals(resultModel)) {
             return OmConstants.OBS_TYPE_COMPLEX_OBSERVATION;
         }
@@ -147,23 +157,25 @@ public final class OMHelper {
     public static QName getQNameFor(final String observationType) {
         if (null != observationType) {
             switch (observationType) {
-            case OmConstants.OBS_TYPE_MEASUREMENT:
-                return OmConstants.RESULT_MODEL_MEASUREMENT;
-            case OmConstants.OBS_TYPE_CATEGORY_OBSERVATION:
-                return OmConstants.RESULT_MODEL_CATEGORY_OBSERVATION;
-            case OmConstants.OBS_TYPE_GEOMETRY_OBSERVATION:
-                return OmConstants.RESULT_MODEL_GEOMETRY_OBSERVATION;
-            case OmConstants.OBS_TYPE_COUNT_OBSERVATION:
-                return OmConstants.RESULT_MODEL_COUNT_OBSERVATION;
-            case OmConstants.OBS_TYPE_TRUTH_OBSERVATION:
-                return OmConstants.RESULT_MODEL_TRUTH_OBSERVATION;
-            case OmConstants.OBS_TYPE_TEXT_OBSERVATION:
-                return OmConstants.RESULT_MODEL_TEXT_OBSERVATION;
-            case OmConstants.OBS_TYPE_COMPLEX_OBSERVATION:
-                return OmConstants.RESULT_MODEL_COMPLEX_OBSERVATION;
-            default:
-                LOG.trace("Not supported observationType '{}'", observationType);
-                break;
+                case OmConstants.OBS_TYPE_MEASUREMENT:
+                    return OmConstants.RESULT_MODEL_MEASUREMENT;
+                case OmConstants.OBS_TYPE_CATEGORY_OBSERVATION:
+                    return OmConstants.RESULT_MODEL_CATEGORY_OBSERVATION;
+                case OmConstants.OBS_TYPE_GEOMETRY_OBSERVATION:
+                    return OmConstants.RESULT_MODEL_GEOMETRY_OBSERVATION;
+                case OmConstants.OBS_TYPE_COUNT_OBSERVATION:
+                    return OmConstants.RESULT_MODEL_COUNT_OBSERVATION;
+                case OmConstants.OBS_TYPE_TRUTH_OBSERVATION:
+                    return OmConstants.RESULT_MODEL_TRUTH_OBSERVATION;
+                case OmConstants.OBS_TYPE_TEXT_OBSERVATION:
+                    return OmConstants.RESULT_MODEL_TEXT_OBSERVATION;
+                case OmConstants.OBS_TYPE_REFERENCE_OBSERVATION:
+                    return OmConstants.RESULT_MODEL_REFERENCE_OBSERVATION;
+                case OmConstants.OBS_TYPE_COMPLEX_OBSERVATION:
+                    return OmConstants.RESULT_MODEL_COMPLEX_OBSERVATION;
+                default:
+                    LOG.trace("Not supported observationType '{}'", observationType);
+                    break;
             }
         }
         return OmConstants.RESULT_MODEL_OBSERVATION;
@@ -221,7 +233,7 @@ public final class OMHelper {
 
         @Override
         public String visit(ReferenceValue value) {
-            return defaultValue();
+            return OmConstants.OBS_TYPE_REFERENCE_OBSERVATION;
         }
 
         @Override
@@ -235,17 +247,17 @@ public final class OMHelper {
         }
 
         @Override
+        public String visit(TLVTValue value) {
+            return defaultValue();
+        }
+
+        @Override
         public String visit(TextValue value) {
             return OmConstants.OBS_TYPE_TEXT_OBSERVATION;
         }
 
         @Override
         public String visit(UnknownValue value) {
-            return defaultValue();
-        }
-
-        @Override
-        public String visit(TLVTValue value) {
             return defaultValue();
         }
 
@@ -266,6 +278,21 @@ public final class OMHelper {
 
         @Override
         public String visit(ProfileValue value) {
+            return defaultValue();
+        }
+
+        @Override
+        public String visit(TimeRangeValue value) {
+            return defaultValue();
+        }
+
+        @Override
+        public String visit(XmlValue<?> value) {
+            return defaultValue();
+        }
+
+        @Override
+        public String visit(QuantityRangeValue value) {
             return defaultValue();
         }
 

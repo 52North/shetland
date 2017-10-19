@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.n52.shetland.ogc.UoM;
 import org.n52.shetland.ogc.swe.SweConstants.SweDataComponentType;
+import org.n52.shetland.w3c.xlink.Referenceable;
 import org.n52.shetland.ogc.swe.SweDataComponentVisitor;
 import org.n52.shetland.ogc.swe.VoidSweDataComponentVisitor;
 
@@ -27,19 +28,13 @@ import org.n52.shetland.ogc.swe.VoidSweDataComponentVisitor;
  * SOS internal representation of SWE simpleType quantity
  *
  * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
- * @since 4.0.0
+ * @since 1.0.0
  */
 public class SweQuantity extends SweAbstractUomType<Double> implements SweQuality {
 
-    /**
-     * axis ID
-     */
     private String axisID;
-
-    /**
-     * value
-     */
     private Double value;
+    private Referenceable<SweAllowedValues> constraint;
 
     /**
      * constructor
@@ -116,6 +111,9 @@ public class SweQuantity extends SweAbstractUomType<Double> implements SweQualit
         if ((getAxisID() == null) ? (other.getAxisID() != null) : !getAxisID().equals(other.getAxisID())) {
             return false;
         }
+        if ((getValue() == null) ? (other.getValue() != null) : !getValue().equals(other.getValue())) {
+            return false;
+        }
         return super.equals(obj);
     }
 
@@ -134,6 +132,31 @@ public class SweQuantity extends SweAbstractUomType<Double> implements SweQualit
 
     public boolean isSetAxisID() {
         return axisID != null && !axisID.isEmpty();
+    }
+
+    /**
+     * @return the constraint
+     */
+    public Referenceable<SweAllowedValues> getConstraint() {
+        return constraint;
+    }
+
+    /**
+     * @param constraint the constraint to set
+     */
+    public void setConstraint(SweAllowedValues constraint) {
+        this.constraint = Referenceable.of(constraint);
+    }
+
+    /**
+     * @param constraint the constraint to set
+     */
+    public void setConstraint(Referenceable<SweAllowedValues> constraint) {
+        this.constraint = constraint;
+    }
+
+    public boolean isSetContstraint() {
+        return getConstraint() != null && !getConstraint().isAbsent();
     }
 
     @Override
@@ -170,6 +193,9 @@ public class SweQuantity extends SweAbstractUomType<Double> implements SweQualit
         }
         if (isSetValue()) {
             copy.setValue(getValue());
+        }
+        if (isSetContstraint()) {
+            copy.setConstraint(getConstraint());
         }
         return copy;
     }

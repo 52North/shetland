@@ -16,6 +16,7 @@
  */
 package org.n52.shetland.ogc.sos.gda;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ import com.google.common.base.Strings;
  *
  * @author Christian Autermann
  *
- * @since 4.0.0
+ * @since 1.0.0
  */
 public class GetDataAvailabilityRequest extends OwsServiceRequest implements ResponseFormat {
 
@@ -38,7 +39,7 @@ public class GetDataAvailabilityRequest extends OwsServiceRequest implements Res
     private List<String> observedProperties = new LinkedList<>();
     private List<String> featuresOfInterest = new LinkedList<>();
     private List<String> offerings = new LinkedList<>();
-    private String namspace = GetDataAvailabilityConstants.NS_GDA;
+    private String namespace = GetDataAvailabilityConstants.NS_GDA_20;
     private String responseFormat;
 
     public GetDataAvailabilityRequest() {
@@ -111,8 +112,9 @@ public class GetDataAvailabilityRequest extends OwsServiceRequest implements Res
         this.featuresOfInterest.add(featureOfInterest);
     }
 
-    public void setFeatureOfInterest(List<String> featuresOfInterest) {
-        this.featuresOfInterest = featuresOfInterest;
+    public void setFeatureOfInterest(Collection<String> featuresOfInterest) {
+        this.featuresOfInterest.clear();
+        this.featuresOfInterest.addAll(featuresOfInterest);
     }
 
     /**
@@ -125,8 +127,9 @@ public class GetDataAvailabilityRequest extends OwsServiceRequest implements Res
         this.offerings.add(offering);
     }
 
-    public void setOffering(List<String> offerings) {
-        this.offerings = offerings;
+    public void setOfferings(Collection<String> offerings) {
+        this.offerings.clear();
+        this.offerings.addAll(offerings);
     }
 
     public boolean isSetProcedures() {
@@ -134,7 +137,8 @@ public class GetDataAvailabilityRequest extends OwsServiceRequest implements Res
     }
 
     public void setProcedure(List<String> procedures) {
-        this.procedures = procedures;
+        this.procedures.clear();
+        this.procedures.addAll(procedures);
     }
 
     public boolean isSetProcedure() {
@@ -150,7 +154,8 @@ public class GetDataAvailabilityRequest extends OwsServiceRequest implements Res
     }
 
     public void setObservedProperty(List<String> observedProperties) {
-        this.observedProperties = observedProperties;
+        this.observedProperties.clear();
+        this.observedProperties.addAll(observedProperties);
     }
 
     public boolean isSetFeaturesOfInterest() {
@@ -163,7 +168,7 @@ public class GetDataAvailabilityRequest extends OwsServiceRequest implements Res
 
     @Override
     public String getResponseFormat() {
-        return responseFormat;
+        return Strings.isNullOrEmpty(responseFormat) ? getNamespace() : responseFormat;
     }
 
     @Override
@@ -171,20 +176,13 @@ public class GetDataAvailabilityRequest extends OwsServiceRequest implements Res
         this.responseFormat = responseFormat;
     }
 
-    @Override
-    public boolean isSetResponseFormat() {
-        return !Strings.isNullOrEmpty(getResponseFormat());
-    }
-
-    public GetDataAvailabilityRequest setNamespace(String namspace) {
-        if (!Strings.isNullOrEmpty(namspace)) {
-            this.namspace = namspace;
-        }
-        return this;
-    }
-
     public String getNamespace() {
-        return this.namspace;
+        return this.namespace;
+    }
+
+    public GetDataAvailabilityRequest setNamespace(String namespace) {
+        this.namespace = namespace;
+        return this;
     }
 
 }

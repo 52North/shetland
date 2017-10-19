@@ -17,16 +17,18 @@
 package org.n52.shetland.ogc.swe.simpleType;
 
 import org.n52.shetland.ogc.swe.SweConstants.SweDataComponentType;
+import org.n52.shetland.w3c.xlink.Referenceable;
 import org.n52.shetland.ogc.swe.SweDataComponentVisitor;
 import org.n52.shetland.ogc.swe.VoidSweDataComponentVisitor;
 
 /**
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
 public class SweCount extends SweAbstractSimpleType<Integer> {
 
     private Integer value;
+    private Referenceable<SweAllowedValues> constraint;
 
     @Override
     public Integer getValue() {
@@ -65,6 +67,31 @@ public class SweCount extends SweAbstractSimpleType<Integer> {
         value += count;
     }
 
+    /**
+     * @return the constraint
+     */
+    public Referenceable<SweAllowedValues> getConstraint() {
+        return constraint;
+    }
+
+    /**
+     * @param constraint the constraint to set
+     */
+    public void setConstraint(SweAllowedValues constraint) {
+        this.constraint = Referenceable.of(constraint);
+    }
+
+    /**
+     * @param constraint the constraint to set
+     */
+    public void setConstraint(Referenceable<SweAllowedValues> constraint) {
+        this.constraint = constraint;
+    }
+
+    public boolean isSetContstraint() {
+        return getConstraint() != null && !getConstraint().isAbsent();
+    }
+
     @Override
     public <T, X extends Throwable> T accept(SweDataComponentVisitor<T, X> visitor) throws X {
         return visitor.visit(this);
@@ -81,6 +108,9 @@ public class SweCount extends SweAbstractSimpleType<Integer> {
         copyValueTo(copy);
         if (isSetValue()) {
             copy.setValue(getValue());
+        }
+        if (isSetContstraint()) {
+            copy.setConstraint(getConstraint());
         }
         return copy;
     }

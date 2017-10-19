@@ -20,23 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.n52.shetland.ogc.sensorML.HasComponents;
+import org.n52.shetland.ogc.sensorML.HasConnections;
 import org.n52.shetland.ogc.sensorML.elements.SmlComponent;
+import org.n52.shetland.ogc.sensorML.elements.SmlConnection;
 import org.n52.shetland.util.JavaHelper;
 
 /**
  * Class that represents SensorML 2.0 AggregateProcess
  *
  * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
- * @since 4.2.0
+ * @since 1.0.0
  *
  */
-public class AggregateProcess extends DescribedObject implements HasComponents<AggregateProcess> {
+public class AggregateProcess
+        extends DescribedObject
+        implements HasComponents<AggregateProcess>, HasConnections<AggregateProcess> {
 
     public static final String ID_PREFIX = "ap_";
-
     private final List<SmlComponent> components = new ArrayList<>(0);
-
-//    private Object connections;
+    private SmlConnection connections;
 
     public AggregateProcess() {
         setGmlId(ID_PREFIX + JavaHelper.generateID(ID_PREFIX));
@@ -64,13 +66,17 @@ public class AggregateProcess extends DescribedObject implements HasComponents<A
     }
 
     @Override
-    public boolean isSetComponents() {
-        return components != null && !components.isEmpty();
-    }
-
-    @Override
     public boolean isAggragation() {
         return true;
+    }
+
+    public SmlConnection getConnections() {
+        return connections;
+    }
+
+    public AggregateProcess setConnections(SmlConnection connections) {
+        this.connections = connections;
+        return this;
     }
 
 }

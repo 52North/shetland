@@ -29,7 +29,8 @@ import com.google.common.collect.ImmutableSet;
 /**
  * Class contains element names and namespaces used to encode the O&M responses.
  *
- * Interface contains element names and namespaces used to encode the OGC O&M responses.
+ * Interface contains element names and namespaces used to encode the OGC O&M
+ * responses.
  *
  * @since 1.0.0
  */
@@ -44,8 +45,9 @@ public interface OmConstants {
 
     String NS_OM_PREFIX = "om";
 
-    @Deprecated // project specific, should go into seperate class?
-    String NS_WV = "http://www.n52.org/wv";
+    String NS_GMD = "http://www.isotc211.org/2005/gmd";
+
+    String NS_GMD_PREFIX = "gmd";
 
     String SCHEMA_LOCATION_URL_OM = "http://schemas.opengis.net/om/1.0.0/om.xsd";
 
@@ -64,13 +66,19 @@ public interface OmConstants {
     // other
     String AN_ID = "id";
 
-    MediaType CONTENT_TYPE_OM = new MediaType("text", "xml", "subtype", "om/1.0.0");
+    String TEXT = "text";
 
-    MediaType CONTENT_TYPE_OM_2 = new MediaType("text", "xml", "subtype", "om/2.0.0");
+    String XML = "xml";
+
+    String SUBTYPE = "subtype";
+
+    MediaType CONTENT_TYPE_OM = new MediaType(TEXT, XML, SUBTYPE, "om/1.0.0");
+
+    MediaType CONTENT_TYPE_OM_2 = new MediaType(TEXT, XML, SUBTYPE, "om/2.0.0");
 
     String RESPONSE_FORMAT_OM = "http://www.opengis.net/om/1.0.0";
 
-    String RESPONSE_FORMAT_OM_2 = "http://www.opengis.net/om/2.0";
+    String RESPONSE_FORMAT_OM_2 = NS_OM_2;
 
     // ///////////////////////////////////////////////////////////////////
     // names of elements in O&M documents
@@ -87,6 +95,8 @@ public interface OmConstants {
     String EN_COUNT_OBSERVATION = "CountObservation";
 
     String EN_TEXT_OBSERVATION = "TextObservation";
+
+    String EN_REFERENCE_OBSERVATION = "ReferenceObservation";
 
     String EN_TRUTH_OBSERVATION = "TruthObservation";
 
@@ -176,9 +186,35 @@ public interface OmConstants {
 
     String PARAM_NAME_SAMPLING_GEOMETRY = "http://www.opengis.net/def/param-name/OGC-OM/2.0/samplingGeometry";
 
-    String PARAMETER_NAME_DEPTH = "http://www.opengis.net/def/param-name/OGC-OM/2.0/depth";
+    String PARAMETER_NAME_DEPTH_URL = "http://www.opengis.net/def/param-name/OGC-OM/2.0/depth";
 
-    String PARAMETER_NAME_HEIGHT = "http://www.opengis.net/def/param-name/OGC-OM/2.0/height";
+    String PARAMETER_NAME_HEIGHT_URL = "http://www.opengis.net/def/param-name/OGC-OM/2.0/height";
+
+    String PARAMETER_NAME_DEPTH = "depth";
+
+    String PARAMETER_NAME_HEIGHT = "height";
+
+    String PARAMETER_NAME_ELEVATION = "elevation";
+
+    String PARAMETER_NAME_FROM = "from";
+
+    String PARAMETER_NAME_TO = "to";
+
+    String PARAMETER_NAME_FROM_DEPTH = "fromDepth";
+
+    String PARAMETER_NAME_TO_DEPTH = "toDepth";
+
+    String PARAMETER_NAME_FROM_HEIGHT = "fromHeight";
+
+    String PARAMETER_NAME_TO_HEIGHT = "toHeight";
+
+    String PARAMETER_NAME_FROM_ELEVATION = "fromEelvation";
+
+    String PARAMETER_NAME_TO_ELEVATION = "toElevation";
+
+    String PARAMETER = EN_PARAMETER;
+
+    String OM_PARAMETER = "om:" + PARAMETER;
 
     // observation types
     String OBS_TYPE_MEASUREMENT = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement";
@@ -194,17 +230,33 @@ public interface OmConstants {
     String OBS_TYPE_GEOMETRY_OBSERVATION =
             "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_GeometryObservation";
 
-    // no Definition in O&M and not in Lightweight Profile
-    String OBS_TYPE_TEXT_OBSERVATION = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_TextObservation";
-
     String OBS_TYPE_TRUTH_OBSERVATION = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_TruthObservation";
 
     String OBS_TYPE_OBSERVATION = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Observation";
+
+    // coverage observation types
+    String OBS_TYPE_DISCRETE_COVERAGE_OBSERVATION =
+            "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_DiscreteCoverageObservation";
+
+    String OBS_TYPE_POINT_COVERAGE_OBSERVATION =
+            "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_PointCoverageObservation";
+
+    String OBS_TYPE_TIME_SERIES_OBSERVATION =
+            "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_TimeSeriesObservation";
+
+    // no Definition in O&M and not in Lightweight Profile
+    String OBS_TYPE_TEXT_OBSERVATION = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_TextObservation";
+
+    String OBS_TYPE_PROFILE_OBSERVATION =
+            "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_ProfileObservation";
 
     String OBS_TYPE_UNKNOWN = OGCConstants.UNKNOWN;
 
     String OBS_TYPE_SWE_ARRAY_OBSERVATION =
             "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_SWEArrayObservation";
+
+    String OBS_TYPE_REFERENCE_OBSERVATION =
+            "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_ReferenceObservation";
 
     String OBS_RESULT_TYPE_OBSERVATION = "http://www.opengis.net/sensorML/2.0/DataArray";
 
@@ -227,6 +279,8 @@ public interface OmConstants {
     QName RESULT_MODEL_TRUTH_OBSERVATION = new QName(NS_OM, EN_TRUTH_OBSERVATION, NS_OM_PREFIX);
 
     QName RESULT_MODEL_TEXT_OBSERVATION = new QName(NS_OM, EN_TEXT_OBSERVATION, NS_OM_PREFIX);
+
+    QName RESULT_MODEL_REFERENCE_OBSERVATION = new QName(NS_OM, EN_REFERENCE_OBSERVATION, NS_OM_PREFIX);
 
     /**
      * Array of constants for result models.
@@ -266,15 +320,17 @@ public interface OmConstants {
     ObservationType OBS_TYPE_SWE_ARRAY_OBSERVATION_TYPE = new ObservationType(OBS_TYPE_SWE_ARRAY_OBSERVATION);
     ObservationType OBS_TYPE_TRUTH_OBSERVATION_TYPE = new ObservationType(OBS_TYPE_TRUTH_OBSERVATION);
     ObservationType OBS_TYPE_MEASUREMENT_TYPE = new ObservationType(OBS_TYPE_MEASUREMENT);
+    ObservationType OBS_TYPE_REFERENCE_OBSERVATION_TYPE = new ObservationType(OBS_TYPE_REFERENCE_OBSERVATION);
 
-    Set<String> OBSERVATION_TYPES = ImmutableSet.of(
-            OBS_TYPE_MEASUREMENT,
-            OBS_TYPE_CATEGORY_OBSERVATION,
-            OBS_TYPE_COMPLEX_OBSERVATION,
-            OBS_TYPE_COUNT_OBSERVATION,
-            OBS_TYPE_GEOMETRY_OBSERVATION,
-            OBS_TYPE_TEXT_OBSERVATION,
-            OBS_TYPE_TRUTH_OBSERVATION,
-            OBS_TYPE_SWE_ARRAY_OBSERVATION
-    );
+    Set<String> OBSERVATION_TYPES =
+            ImmutableSet.of(OBS_TYPE_MEASUREMENT,
+                    OBS_TYPE_CATEGORY_OBSERVATION,
+                    OBS_TYPE_COMPLEX_OBSERVATION,
+                    OBS_TYPE_COUNT_OBSERVATION,
+                    OBS_TYPE_GEOMETRY_OBSERVATION,
+                    OBS_TYPE_TEXT_OBSERVATION,
+                    OBS_TYPE_TRUTH_OBSERVATION,
+                    OBS_TYPE_SWE_ARRAY_OBSERVATION,
+                    OBS_TYPE_PROFILE_OBSERVATION,
+                    OBS_TYPE_REFERENCE_OBSERVATION);
 }

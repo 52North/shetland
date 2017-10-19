@@ -18,8 +18,6 @@ package org.n52.shetland.ogc.om.values;
 
 import org.n52.shetland.ogc.UoM;
 import org.n52.shetland.ogc.om.values.visitor.ValueVisitor;
-import org.n52.shetland.ogc.om.values.visitor.VoidValueVisitor;
-import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.swe.simpleType.SweText;
 
 import com.google.common.base.Strings;
@@ -27,10 +25,12 @@ import com.google.common.base.Strings;
 /**
  * Text measurement representation for observation
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
-public class TextValue extends SweText implements Value<String> {
+public class TextValue
+        extends SweText
+        implements Value<String> {
     /**
      * Unit of measure
      */
@@ -40,7 +40,7 @@ public class TextValue extends SweText implements Value<String> {
      * constructor
      *
      * @param value
-     *              Measurement value
+     *            Measurement value
      */
     public TextValue(String value) {
         super();
@@ -59,6 +59,12 @@ public class TextValue extends SweText implements Value<String> {
     }
 
     @Override
+    public TextValue setUnit(UoM unit) {
+        this.unit = unit;
+        return this;
+    }
+
+    @Override
     public String getUnit() {
         if (isSetUnit()) {
             return unit.getUom();
@@ -72,20 +78,13 @@ public class TextValue extends SweText implements Value<String> {
     }
 
     @Override
-    public TextValue setUnit(UoM unit) {
-        this.unit = unit;
-        return this;
-    }
-
-    @Override
     public boolean isSetUnit() {
         return getUnitObject() != null && !getUnitObject().isEmpty();
     }
 
     @Override
     public String toString() {
-        return String
-                .format("TextValue [value=%s, unit=%s]", getValue(), getUnit());
+        return String.format("TextValue [value=%s, unit=%s]", getValue(), getUnit());
     }
 
     @Override

@@ -16,20 +16,14 @@
  */
 package org.n52.shetland.ogc.sos.response;
 
-import java.util.List;
 
-import org.n52.shetland.ogc.om.OmObservation;
-import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.sos.SosConstants;
 
-
-import com.google.common.collect.Lists;
-
 /**
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
-public class GetObservationResponse extends AbstractObservationResponse implements StreamingDataResponse {
+public class GetObservationResponse extends AbstractObservationResponse {
     public GetObservationResponse() {
         super(null, null, SosConstants.Operations.GetObservation.name());
     }
@@ -41,50 +35,4 @@ public class GetObservationResponse extends AbstractObservationResponse implemen
     public GetObservationResponse(String service, String version, String operationName) {
         super(service, version, operationName);
     }
-
-    /*
-     * TODO uncomment when WaterML support is activated public
-     * Collection<SosObservation> mergeObservations(boolean
-     * mergeObservationValuesWithSameParameters) { Collection<SosObservation>
-     * combinedObsCol = new ArrayList<SosObservation>(); int obsIdCounter = 1;
-     * for (SosObservation sosObservation : observationCollection) { if
-     * (combinedObsCol.isEmpty()) {
-     * sosObservation.setObservationID(Integer.toString(obsIdCounter++));
-     * combinedObsCol.add(sosObservation); } else { boolean combined = false;
-     * for (SosObservation combinedSosObs : combinedObsCol) { if
-     * (mergeObservationValuesWithSameParameters) { if
-     * (combinedSosObs.getObservationConstellation().equals(
-     * sosObservation.getObservationConstellation())) {
-     * combinedSosObs.mergeWithObservation(sosObservation, false); combined =
-     * true; break; } } else { if
-     * (combinedSosObs.getObservationConstellation().equalsExcludingObsProp(
-     * sosObservation.getObservationConstellation())) {
-     * combinedSosObs.mergeWithObservation(sosObservation, true); combined =
-     * true; break; } } } if (!combined) { combinedObsCol.add(sosObservation); }
-     * } } return combinedObsCol; }
-     */
-    @Override
-    public boolean hasStreamingData() {
-        OmObservation observation = getFirstObservation();
-        return observation != null && observation.getValue() instanceof AbstractStreaming;
-    }
-
-    @Override
-    public void mergeStreamingData() throws OwsExceptionReport {
-        List<OmObservation> observations = Lists.newArrayList();
-        if (hasStreamingData()) {
-            for (OmObservation observation : getObservationCollection()) {
-                AbstractStreaming values = (AbstractStreaming) observation.getValue();
-                if (values.hasNextValue()) {
-                    if (isSetMergeObservation()) {
-                        observations.addAll(values.mergeObservation());
-                    } else {
-                        observations.addAll(values.getObservation());
-                    }
-                }
-            }
-        }
-        setObservationCollection(observations);
-    }
-
 }

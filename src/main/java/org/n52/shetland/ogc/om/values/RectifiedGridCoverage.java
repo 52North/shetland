@@ -33,20 +33,23 @@ import com.google.common.collect.Maps;
  * Class that represents a rectified grid coverage
  *
  * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
- * @since 4.4.0
+ * @since 1.0.0
  *
  */
-public class RectifiedGridCoverage implements DiscreteCoverage<SortedMap<Double, Value<?>>> {
+public class RectifiedGridCoverage
+        implements DiscreteCoverage<SortedMap<ComparableValue<?, ?>, Value<?>>> {
 
+    private static final String GML_ID_PREFIX = "rgc_";
     private final String gmlId;
-    private final SortedMap<Double, Value<?>> value = Maps.newTreeMap();
+    private final SortedMap<ComparableValue<?, ?>, Value<?>> value = Maps.newTreeMap();
     private UoM unit;
+    private String rangeParameters;
 
     public RectifiedGridCoverage(String gmlId) {
         if (Strings.isNullOrEmpty(gmlId)) {
-            this.gmlId = JavaHelper.generateID(toString());
-        } else if (!gmlId.startsWith("rgc_")) {
-            this.gmlId = "rgc_" + gmlId;
+            this.gmlId = GML_ID_PREFIX + JavaHelper.generateID(toString());
+        } else if (!gmlId.startsWith(GML_ID_PREFIX)) {
+            this.gmlId = GML_ID_PREFIX + gmlId;
         } else {
             this.gmlId = gmlId;
         }
@@ -58,28 +61,42 @@ public class RectifiedGridCoverage implements DiscreteCoverage<SortedMap<Double,
     }
 
     @Override
-    public RectifiedGridCoverage setValue(SortedMap<Double, Value<?>> value) {
+    public RectifiedGridCoverage setValue(SortedMap<ComparableValue<?, ?>, Value<?>> value) {
         this.value.clear();
         addValue(value);
         return this;
     }
 
-    public void addValue(Double key, Value<?> value) {
+    public void addValue(ComparableValue<?, ?> key, Value<?> value) {
         this.value.put(key, value);
     }
 
-    public void addValue(SortedMap<Double, Value<?>> value) {
+    public void addValue(SortedMap<ComparableValue<?, ?>, Value<?>> value) {
         this.value.putAll(value);
     }
 
+    public void addValue(Double key, Value<?> value) {
+        this.value.put(new QuantityValue(key), value);
+    }
+
+    public void addValue(Double from, Double to, Value<?> value) {
+        this.value.put(new QuantityRangeValue(from, to), value);
+    }
+
     @Override
-    public SortedMap<Double, Value<?>> getValue() {
+    public SortedMap<ComparableValue<?, ?>, Value<?>> getValue() {
         return value;
     }
 
     @Override
     public void setUnit(String unit) {
         this.unit = new UoM(unit);
+    }
+
+    @Override
+    public RectifiedGridCoverage setUnit(UoM unit) {
+        this.unit = unit;
+        return this;
     }
 
     @Override
@@ -96,12 +113,6 @@ public class RectifiedGridCoverage implements DiscreteCoverage<SortedMap<Double,
     }
 
     @Override
-    public RectifiedGridCoverage setUnit(UoM unit) {
-        this.unit = unit;
-        return this;
-    }
-
-    @Override
     public boolean isSetUnit() {
         return getUnitObject() != null && !getUnitObject().isEmpty();
     }
@@ -112,16 +123,17 @@ public class RectifiedGridCoverage implements DiscreteCoverage<SortedMap<Double,
     }
 
     @Override
-    public <X, E extends Exception> X accept(ValueVisitor<X, E> visitor) throws E {
+    public <X, E extends Exception> X accept(ValueVisitor<X, E> visitor)
+            throws E {
         return visitor.visit(this);
     }
 
     /**
      * Get the domainSet
      *
-     * @return The domainSet as {@link Double} {@link List}
+     * @return The domainSet as {@link ComparableValue} {@link List}
      */
-    public List<Double> getDomainSet() {
+    public List<ComparableValue<?, ?>> getDomainSet() {
         return Lists.newArrayList(getValue().keySet());
     }
 
@@ -130,4 +142,18 @@ public class RectifiedGridCoverage implements DiscreteCoverage<SortedMap<Double,
         return getValue().values();
     }
 
+    @Override
+    public String getRangeParameters() {
+        return rangeParameters;
+    }
+
+    @Override
+    public void setRangeParameters(String rangeParameters) {
+        this.rangeParameters = rangeParameters;
+    }
+
+    @Override
+    public boolean isSetRangeParameters() {
+        return !Strings.isNullOrEmpty(getRangeParameters());
+    }
 }

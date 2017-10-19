@@ -28,7 +28,7 @@ import org.junit.Test;
  * @author <a href="mailto:e.h.juerrens@52north.org">Eike Hinderk
  *         J&uuml;rrens</a> TODO test extent to methods!!!
  *
- * @since 4.0.0
+ * @since 1.0.0
  */
 public class TimePeriodTest {
 
@@ -126,9 +126,9 @@ public class TimePeriodTest {
         DateTime beforeAccess = new DateTime();
         DateTime nowValue = timePeriod.resolveStart();
         assertNotNull("TimePeriod start now value is null", nowValue);
-        assertTrue("TimePeriod start now value is too early",
-                nowValue.isAfter(beforeAccess) || nowValue.isEqual(beforeAccess));
-        assertTrue("TimePeriod start now value is too late", nowValue.isBeforeNow() || nowValue.isEqualNow());
+        assertTrue("TimePeriod start now value is too early", nowValue.isAfter(beforeAccess) || nowValue.isEqual(beforeAccess));
+        DateTime now = new DateTime();
+        assertTrue("TimePeriod start now value is too late", nowValue.isBefore(now) || nowValue.isEqual(now));
     }
 
     @Test

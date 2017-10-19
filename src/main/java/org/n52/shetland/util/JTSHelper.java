@@ -19,8 +19,6 @@ package org.n52.shetland.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.Envelope;
@@ -33,37 +31,39 @@ import com.vividsolutions.jts.io.WKTReader;
 /**
  * Utility class for the Java Topology Suite.
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
 public class JTSHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JTSHelper.class);
-
     public static final String WKT_POLYGON = "Polygon";
-
     public static final String WKT_POINT = "Point";
-
     public static final CoordinateFilter COORDINATE_SWITCHING_FILTER = coord -> {
         double tmp = coord.x;
         coord.x = coord.y;
         coord.y = tmp;
     };
+    private static final Logger LOGGER = LoggerFactory.getLogger(JTSHelper.class);
 
     protected JTSHelper() {
     }
 
     /**
-     * Creates a JTS Geometry from an WKT representation. Switches the coordinate order if needed.
+     * Creates a JTS Geometry from an WKT representation. Switches the
+     * coordinate order if needed.
      *
-     * @param wkt WKT representation of the geometry
-     * @param srid the SRID of the newly created geometry
+     * @param wkt
+     *            WKT representation of the geometry
+     * @param srid
+     *            the SRID of the newly created geometry
      *
      * @return JTS Geometry object
      *
-     * @throws ParseException If an error occurs
+     * @throws ParseException
+     *             If an error occurs
      */
-    public static Geometry createGeometryFromWKT(String wkt, int srid) throws ParseException {
+    public static Geometry createGeometryFromWKT(String wkt, int srid)
+            throws ParseException {
         WKTReader wktReader = getWKTReaderForSRID(srid);
         LOGGER.debug("FOI Geometry: {}", wkt);
         return wktReader.read(wkt);
@@ -126,16 +126,6 @@ public class JTSHelper {
         return createWKTPolygonFromEnvelope(minx, miny, maxx, maxy);
     }
 
-    public static Envelope createEnvelopeFromLowerUpperCorner(String lowerCorner, String upperCorner) {
-        final String[] splittedLowerCorner = lowerCorner.split(" ");
-        final String[] splittedUpperCorner = upperCorner.split(" ");
-        double minx = Double.parseDouble(splittedLowerCorner[0]);
-        double miny = Double.parseDouble(splittedLowerCorner[1]);
-        double maxx = Double.parseDouble(splittedUpperCorner[0]);
-        double maxy = Double.parseDouble(splittedUpperCorner[1]);
-        return new Envelope(minx, maxx, miny, maxy);
-    }
-
     private static String createWKTPolygonFromEnvelope(String minx, String miny, String maxx, String maxy) {
         StringBuilder sb = new StringBuilder();
         sb.append(WKT_POLYGON).append(" ((");
@@ -145,6 +135,16 @@ public class JTSHelper {
         sb.append(maxx).append(' ').append(miny).append(',');
         sb.append(minx).append(' ').append(miny).append("))");
         return sb.toString();
+    }
+
+    public static Envelope createEnvelopeFromLowerUpperCorner(String lowerCorner, String upperCorner) {
+        final String[] splittedLowerCorner = lowerCorner.split(" ");
+        final String[] splittedUpperCorner = upperCorner.split(" ");
+        double minx = Double.parseDouble(splittedLowerCorner[0]);
+        double miny = Double.parseDouble(splittedLowerCorner[1]);
+        double maxx = Double.parseDouble(splittedUpperCorner[0]);
+        double maxy = Double.parseDouble(splittedUpperCorner[1]);
+        return new Envelope(minx, maxx, miny, maxy);
     }
 
     public static Geometry createPolygonFromEnvelope(double[] envelope, int srid) {
@@ -161,8 +161,7 @@ public class JTSHelper {
             new Coordinate(minx, maxy),
             new Coordinate(maxx, maxy),
             new Coordinate(maxx, miny),
-            new Coordinate(minx, miny)
-        });
+            new Coordinate(minx, miny) });
     }
 
     /**
@@ -173,9 +172,8 @@ public class JTSHelper {
      * @param geometry
      *            Geometry to switch coordinates.
      * @return Geometry with switched coordinates
-     * @throws OwsExceptionReport
      */
-    public static <G extends Geometry> G switchCoordinateAxisOrder(G geometry) throws OwsExceptionReport {
+    public static <G extends Geometry> G switchCoordinateAxisOrder(G geometry) {
         if (geometry == null) {
             return null;
         }

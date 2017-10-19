@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.n52.janmayen.Copyable;
+import org.n52.shetland.ogc.HasDefaultEncoding;
 import org.n52.shetland.ogc.gml.CodeType;
 import org.n52.shetland.ogc.swe.SweConstants.SweDataComponentType;
 import org.n52.shetland.util.CollectionHelper;
@@ -28,10 +29,11 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 /**
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
-public abstract class SweAbstractDataComponent implements Copyable<SweAbstractDataComponent>{
+public abstract class SweAbstractDataComponent
+        implements HasDefaultEncoding<SweAbstractDataComponent>, Copyable<SweAbstractDataComponent> {
 
     private String definition;
 
@@ -59,6 +61,8 @@ public abstract class SweAbstractDataComponent implements Copyable<SweAbstractDa
      * pre-set XML representation
      */
     private String xml;
+
+    private String defaultEncoding = SweConstants.NS_SWE_20;
 
     public String getDefinition() {
         return definition;
@@ -165,8 +169,7 @@ public abstract class SweAbstractDataComponent implements Copyable<SweAbstractDa
     }
 
     public boolean isSetLabel() {
-        String l = getLabel();
-        return l != null && !l.isEmpty();
+        return getLabel() != null && !getLabel().isEmpty();
     }
 
     public boolean isSetName() {
@@ -186,6 +189,17 @@ public abstract class SweAbstractDataComponent implements Copyable<SweAbstractDa
     }
 
     @Override
+    public String getDefaultElementEncoding() {
+        return defaultEncoding;
+    }
+
+    @Override
+    public SweAbstractDataComponent setDefaultElementEncoding(String defaultEncoding) {
+        this.defaultEncoding = defaultEncoding;
+        return this;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hashCode(31, 7, getDefinition(), getDescription(), getIdentifier());
     }
@@ -199,16 +213,16 @@ public abstract class SweAbstractDataComponent implements Copyable<SweAbstractDa
             return false;
         }
         final SweAbstractDataComponent other = (SweAbstractDataComponent) obj;
-        if ((getDefinition() == null) ? (other.getDefinition() != null) : !getDefinition().equals(
-                other.getDefinition())) {
+        if ((getDefinition() == null) ? (other.getDefinition() != null)
+                : !getDefinition().equals(other.getDefinition())) {
             return false;
         }
-        if ((getDescription() == null) ? (other.getDescription() != null) : !getDescription().equals(
-                other.getDescription())) {
+        if ((getDescription() == null) ? (other.getDescription() != null)
+                : !getDescription().equals(other.getDescription())) {
             return false;
         }
-        if ((getIdentifier() == null) ? (other.getIdentifier() != null) : !getIdentifier().equals(
-                other.getIdentifier())) {
+        if ((getIdentifier() == null) ? (other.getIdentifier() != null)
+                : !getIdentifier().equals(other.getIdentifier())) {
             return false;
         }
         return true;
@@ -225,7 +239,7 @@ public abstract class SweAbstractDataComponent implements Copyable<SweAbstractDa
      * passed
      *
      * @param copy
-     *             {@link SweAbstractDataComponent} to copy values to
+     *            {@link SweAbstractDataComponent} to copy values to
      *
      * @return Copy of this
      */

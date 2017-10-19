@@ -21,7 +21,8 @@ import java.util.Objects;
 import org.n52.janmayen.Comparables;
 import org.n52.shetland.w3c.xlink.W3CHrefAttribute;
 
-public class AbstractReferenceType implements Comparable<AbstractReferenceType> {
+public class AbstractReferenceType
+        implements Comparable<AbstractReferenceType> {
 
     /**
      * Href
@@ -72,30 +73,33 @@ public class AbstractReferenceType implements Comparable<AbstractReferenceType> 
      * Set href
      *
      * @param href
-     *             Href to set
+     *            Href to set
      */
-    public void setHref(String href) {
+    public AbstractReferenceType setHref(String href) {
         this.href = new W3CHrefAttribute(href);
+        return this;
     }
 
     /**
      * Set title
      *
      * @param title
-     *              Title to set
+     *            Title to set
      */
-    public void setTitle(String title) {
+    public AbstractReferenceType setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     /**
      * Set role
      *
      * @param role
-     *             Role to set
+     *            Role to set
      */
-    public void setRole(String role) {
+    public AbstractReferenceType setRole(String role) {
         this.role = role;
+        return this;
     }
 
     /**
@@ -122,7 +126,7 @@ public class AbstractReferenceType implements Comparable<AbstractReferenceType> 
      * @return <code>true</code>, if role is set
      */
     public boolean isSetRole() {
-        return this.role!=null && !this.role.isEmpty();
+        return this.role != null && !this.role.isEmpty();
     }
 
     /**
@@ -147,16 +151,16 @@ public class AbstractReferenceType implements Comparable<AbstractReferenceType> 
         if (isSetTitle()) {
             return getTitle();
         }
-        String title = getHref();
-        if (title.startsWith("http")) {
-            title = title.substring(title.lastIndexOf('/') + 1, title.length());
-        } else if (title.startsWith("urn")) {
-            title = title.substring(title.lastIndexOf(':') + 1, title.length());
+        String t = getHref();
+        if (t.startsWith("http")) {
+            t = t.substring(t.lastIndexOf('/') + 1, t.length());
+        } else if (t.startsWith("urn")) {
+            t = t.substring(t.lastIndexOf(':') + 1, t.length());
         }
-        if (title.contains("#")) {
-            title = title.substring(title.lastIndexOf("#") + 1, title.length());
+        if (t.contains("#")) {
+            t = t.substring(t.lastIndexOf("#") + 1, t.length());
         }
-        return title;
+        return t;
     }
 
     @Override

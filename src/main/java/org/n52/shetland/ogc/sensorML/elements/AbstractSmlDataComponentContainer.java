@@ -33,7 +33,7 @@ import com.google.common.collect.Sets;
  * Abstract container class for SensorML data components.
  *
  * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
- * @since 4.0.0
+ * @since 1.0.0
  *
  * @param <T> Implemented class
  */
@@ -99,11 +99,11 @@ public class AbstractSmlDataComponentContainer<T> extends AbstractReferenceType 
             SweSimpleDataRecord sdr = new SweSimpleDataRecord();
             int counter = 1;
             for (SweAbstractDataComponent element : abstractDataComponents) {
-                String name = "field_" + counter++;
+                String n = "field_" + counter++;
                 if (element.isSetName()) {
-                    name = element.getName().getValue();
+                    n = element.getName().getValue();
                 }
-                SweField field = new SweField(name, element);
+                SweField field = new SweField(n, element);
                 sdr.addField(field);
             }
             return sdr;

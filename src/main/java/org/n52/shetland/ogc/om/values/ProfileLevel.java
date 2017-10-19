@@ -16,9 +16,15 @@
  */
 package org.n52.shetland.ogc.om.values;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import org.n52.shetland.ogc.gml.ReferenceType;
+import org.n52.shetland.ogc.gml.time.Time;
+import org.n52.shetland.ogc.om.NamedValue;
 import org.n52.shetland.ogc.swe.SweAbstractDataComponent;
 import org.n52.shetland.ogc.swe.SweDataRecord;
 import org.n52.shetland.ogc.swe.SweField;
@@ -30,15 +36,17 @@ import com.vividsolutions.jts.geom.Geometry;
  * Represents the level of a profile
  *
  * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
- * @since 4.4.0
+ * @since 1.0.0
  *
  */
-public class ProfileLevel implements Comparable<ProfileLevel> {
+public class ProfileLevel
+        implements Comparable<ProfileLevel> {
 
     private QuantityValue levelStart;
     private QuantityValue levelEnd;
     private List<Value<?>> value = Lists.newArrayList();
     private Geometry location;
+    private Time phenomenonTime;
 
     /**
      * constructor
@@ -166,6 +174,25 @@ public class ProfileLevel implements Comparable<ProfileLevel> {
         return getLocation() != null;
     }
 
+    /**
+     * @return the phenomenonTime
+     */
+    public Time getPhenomenonTime() {
+        return phenomenonTime;
+    }
+
+    /**
+     * @param phenomenonTime
+     *            the phenomenonTime to set
+     */
+    public void setPhenomenonTime(Time phenomenonTime) {
+        this.phenomenonTime = phenomenonTime;
+    }
+
+    public boolean isSetPhenomenonTime() {
+        return getPhenomenonTime() != null;
+    }
+
     @Override
     public int compareTo(ProfileLevel o) {
         if (o == null) {
@@ -189,7 +216,8 @@ public class ProfileLevel implements Comparable<ProfileLevel> {
             return false;
         }
         final ProfileLevel other = (ProfileLevel) obj;
-        if ((getLevelStart() == null) ? (other.getLevelStart() != null) : !getLevelStart().equals(other.getLevelStart())) {
+        if ((getLevelStart() == null) ? (other.getLevelStart() != null)
+                : !getLevelStart().equals(other.getLevelStart())) {
             return false;
         }
         if ((getLevelEnd() == null) ? (other.getLevelEnd() != null) : !getLevelEnd().equals(other.getLevelEnd())) {
@@ -228,10 +256,10 @@ public class ProfileLevel implements Comparable<ProfileLevel> {
 
     public SweDataRecord valueAsDataRecord(SweDataRecord dataRecord) {
         int counter = 0;
-        for (Value<?> value : getValue()) {
-            if (value instanceof SweAbstractDataComponent) {
-                SweAbstractDataComponent adc = (SweAbstractDataComponent) value;
-                String name = "";
+        for (Value<?> v : getValue()) {
+            if (v instanceof SweAbstractDataComponent) {
+                SweAbstractDataComponent adc = (SweAbstractDataComponent) v;
+                String name;
                 if (adc.isSetName()) {
                     name = adc.getName().getValue();
                 } else if (adc.isSetDefinition()) {
@@ -243,5 +271,16 @@ public class ProfileLevel implements Comparable<ProfileLevel> {
             }
         }
         return dataRecord;
+    }
+
+    public Collection<NamedValue<?>> getLevelStartEndAsParameter() {
+        SortedSet<NamedValue<?>> parameter = new TreeSet<>();
+        if (isSetLevelStart() && getLevelStart().isSetDefinition()) {
+            parameter.add(new NamedValue<>(new ReferenceType(getLevelStart().getDefinition()), getLevelStart()));
+        }
+        if (isSetLevelEnd() && getLevelEnd().isSetDefinition()) {
+            parameter.add(new NamedValue<>(new ReferenceType(getLevelEnd().getDefinition()), getLevelEnd()));
+        }
+        return parameter;
     }
 }

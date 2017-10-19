@@ -43,7 +43,7 @@ import com.google.common.collect.Sets;
  *
  * @author Christian Autermann
  *
- * @since 4.0.0
+ * @since 1.0.0
  */
 public class GetDataAvailabilityResponse extends OwsServiceResponse implements ResponseFormat {
     private final List<DataAvailability> dataAvailabilities = new LinkedList<>();
@@ -102,7 +102,7 @@ public class GetDataAvailabilityResponse extends OwsServiceResponse implements R
 
     @Override
     public String getResponseFormat() {
-        return responseFormat;
+        return Strings.isNullOrEmpty(responseFormat) ? getNamespace() : responseFormat;
     }
 
     @Override
@@ -110,14 +110,13 @@ public class GetDataAvailabilityResponse extends OwsServiceResponse implements R
         this.responseFormat = responseFormat;
     }
 
-    public void setNamespace(String namespace) {
-        if (!Strings.isNullOrEmpty(namespace)) {
-            this.namespace = namespace;
-        }
-    }
-
     public String getNamespace() {
         return this.namespace;
+    }
+
+    public GetDataAvailabilityResponse setNamespace(String namespace) {
+        this.namespace = namespace;
+        return this;
     }
 
     /**
@@ -375,7 +374,7 @@ public class GetDataAvailabilityResponse extends OwsServiceResponse implements R
 
     /**
      * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
-     * @since 4.4.0
+     * @since 1.0.0
      *
      */
     public static class FormatDescriptor implements Copyable<FormatDescriptor> {
@@ -384,8 +383,8 @@ public class GetDataAvailabilityResponse extends OwsServiceResponse implements R
         private final Set<ObservationFormatDescriptor> observationFormatDescriptors;
 
         /**
-         * @param procedureDescriptionFormatDescriptor
-         * @param observationFormatDescriptors
+         * @param procedureDescriptionFormatDescriptor the {@link ProcedureDescriptionFormatDescriptor}
+         * @param observationFormatDescriptors the {@link ObservationFormatDescriptor}s
          */
         public FormatDescriptor(ProcedureDescriptionFormatDescriptor procedureDescriptionFormatDescriptor,
                                 Set<ObservationFormatDescriptor> observationFormatDescriptors) {
@@ -433,7 +432,7 @@ public class GetDataAvailabilityResponse extends OwsServiceResponse implements R
 
     /**
      * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
-     * @since 4.4.0
+     * @since 1.0.0
      *
      */
     public static class ObservationFormatDescriptor implements Copyable<ObservationFormatDescriptor> {
@@ -442,8 +441,8 @@ public class GetDataAvailabilityResponse extends OwsServiceResponse implements R
         private final Set<String> observationTypes;
 
         /**
-         * @param responseFormat
-         * @param observationTypes
+         * @param responseFormat the response format
+         * @param observationTypes the observation types
          */
         public ObservationFormatDescriptor(String responseFormat, Set<String> observationTypes) {
             super();
@@ -488,7 +487,7 @@ public class GetDataAvailabilityResponse extends OwsServiceResponse implements R
 
     /**
      * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
-     * @since 4.4.0
+     * @since 1.0.0
      *
      */
     //FIXME: replace with org.n52.shetland.ogc.sos.ProcedureDescriptionFormat
@@ -497,7 +496,7 @@ public class GetDataAvailabilityResponse extends OwsServiceResponse implements R
         private String procedureDescriptionFormat;
 
         /**
-         * @param procedureDescriptionFormat
+         * @param procedureDescriptionFormat the procedure desciption format
          */
         public ProcedureDescriptionFormatDescriptor(String procedureDescriptionFormat) {
             super();

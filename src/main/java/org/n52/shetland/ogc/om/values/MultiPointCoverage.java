@@ -40,11 +40,13 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * Class that represents a multi point coverage
  *
  * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
- * @since 4.4.0
+ * @since 1.0.0
  *
  */
-public class MultiPointCoverage implements DiscreteCoverage<List<PointValuePair>> {
+public class MultiPointCoverage
+        implements DiscreteCoverage<List<PointValuePair>> {
 
+    private static final String GML_ID_PREFIX = "mpc_";
     private final String gmlId;
 
     /**
@@ -56,13 +58,14 @@ public class MultiPointCoverage implements DiscreteCoverage<List<PointValuePair>
      * Unit of measure
      */
     private UoM unit;
+    private String rangeParameters;
 
     public MultiPointCoverage(String gmlId) {
         if (Strings.isNullOrEmpty(gmlId)) {
-            this.gmlId = JavaHelper.generateID(toString());
-        } else if (!gmlId.startsWith("mpc_")) {
-            this.gmlId = "mpc_" + gmlId;
-        }else {
+            this.gmlId = GML_ID_PREFIX + JavaHelper.generateID(toString());
+        } else if (!gmlId.startsWith(GML_ID_PREFIX)) {
+            this.gmlId = GML_ID_PREFIX + gmlId;
+        } else {
             this.gmlId = gmlId;
         }
     }
@@ -115,6 +118,12 @@ public class MultiPointCoverage implements DiscreteCoverage<List<PointValuePair>
     }
 
     @Override
+    public MultiPointCoverage setUnit(UoM unit) {
+        this.unit = unit;
+        return this;
+    }
+
+    @Override
     public String getUnit() {
         if (isSetUnit()) {
             return unit.getUom();
@@ -125,12 +134,6 @@ public class MultiPointCoverage implements DiscreteCoverage<List<PointValuePair>
     @Override
     public UoM getUnitObject() {
         return this.unit;
-    }
-
-    @Override
-    public MultiPointCoverage setUnit(UoM unit) {
-        this.unit = unit;
-        return this;
     }
 
     @Override
@@ -171,7 +174,23 @@ public class MultiPointCoverage implements DiscreteCoverage<List<PointValuePair>
     }
 
     @Override
-    public <X, E extends Exception> X accept(ValueVisitor<X, E> visitor) throws E {
+    public String getRangeParameters() {
+        return rangeParameters;
+    }
+
+    @Override
+    public void setRangeParameters(String rangeParameters) {
+        this.rangeParameters = rangeParameters;
+    }
+
+    @Override
+    public boolean isSetRangeParameters() {
+        return !Strings.isNullOrEmpty(getRangeParameters());
+    }
+
+    @Override
+    public <X, E extends Exception> X accept(ValueVisitor<X, E> visitor)
+            throws E {
         return visitor.visit(this);
     }
 
@@ -179,7 +198,7 @@ public class MultiPointCoverage implements DiscreteCoverage<List<PointValuePair>
      * Element that holds {@link Point}s and {@link Value}s
      *
      * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
-     * @since 4.4.0
+     * @since 1.0.0
      *
      */
     public static class PointValueLists {

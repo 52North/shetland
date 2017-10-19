@@ -19,6 +19,7 @@ package org.n52.shetland.ogc.sos.request;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,6 +28,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.n52.janmayen.function.Functions;
+import org.n52.janmayen.function.Predicates;
 import org.n52.shetland.ogc.filter.Filter;
 import org.n52.shetland.ogc.filter.SpatialFilter;
 import org.n52.shetland.ogc.filter.TemporalFilter;
@@ -35,7 +37,6 @@ import org.n52.shetland.ogc.gml.time.TimeInstant;
 import org.n52.shetland.ogc.ows.extension.Extension;
 import org.n52.shetland.ogc.ows.extension.Extensions;
 import org.n52.shetland.ogc.sos.ExtendedIndeterminateTime;
-import org.n52.shetland.ogc.sos.Sos2Constants;
 import org.n52.shetland.ogc.sos.SosConstants;
 import org.n52.shetland.ogc.swes.SwesExtensions;
 import org.n52.shetland.util.CollectionHelper;
@@ -47,9 +48,11 @@ import com.google.common.collect.Maps;
 /**
  * SOS GetObservation request.
  *
- * @since 4.0.0
+ * @since 1.0.0
  */
-public class GetObservationRequest extends AbstractObservationRequest implements SpatialFeatureQueryRequest {
+public class GetObservationRequest
+        extends AbstractObservationRequest
+        implements SpatialFeatureQueryRequest {
 
     /**
      * Request as String.
@@ -85,13 +88,10 @@ public class GetObservationRequest extends AbstractObservationRequest implements
      * Spatial filters list.
      */
     private SpatialFilter spatialFilter;
-
     @SuppressWarnings("rawtypes")
     private Filter resultFilter;
-
     private Map<String, String> namespaces = Maps.newHashMap();
-
-    private boolean mergeObservationValues = false;
+    private boolean mergeObservationValues;
 
     public GetObservationRequest() {
         super(null, null, SosConstants.Operations.GetObservation.name());
@@ -117,10 +117,15 @@ public class GetObservationRequest extends AbstractObservationRequest implements
     /**
      * Set temporal filters.
      *
-     * @param temporalFilters temporal filters
+     * @param temporalFilters
+     *            temporal filters
      */
     public void setTemporalFilters(List<TemporalFilter> temporalFilters) {
-        this.temporalFilters = temporalFilters;
+        this.temporalFilters = Optional.ofNullable(temporalFilters).orElseGet(LinkedList::new);
+    }
+
+    public void addTemporalFilter(TemporalFilter filter) {
+        this.temporalFilters.add(filter);
     }
 
     /**
@@ -136,11 +141,16 @@ public class GetObservationRequest extends AbstractObservationRequest implements
     /**
      * Set FOI identifiers.
      *
-     * @param featureIdentifiers FOI identifiers
+     * @param featureIdentifiers
+     *            FOI identifiers
      */
     @Override
     public void setFeatureIdentifiers(List<String> featureIdentifiers) {
-        this.featureIdentifiers = featureIdentifiers;
+        this.featureIdentifiers = Optional.ofNullable(featureIdentifiers).orElseGet(LinkedList::new);
+    }
+
+    public void addFeatureIdentifier(String featureIdentifier) {
+        this.featureIdentifiers.add(featureIdentifier);
     }
 
     /**
@@ -155,10 +165,15 @@ public class GetObservationRequest extends AbstractObservationRequest implements
     /**
      * Set observedProperties.
      *
-     * @param observedProperties observedProperties
+     * @param observedProperties
+     *            observedProperties
      */
     public void setObservedProperties(List<String> observedProperties) {
-        this.observedProperties = observedProperties;
+        this.observedProperties = Optional.ofNullable(observedProperties).orElseGet(LinkedList::new);
+    }
+
+    public void addObservedProperty(String observedProperty) {
+        this.observedProperties.add(observedProperty);
     }
 
     /**
@@ -173,10 +188,15 @@ public class GetObservationRequest extends AbstractObservationRequest implements
     /**
      * Set offerings.
      *
-     * @param offerings offerings
+     * @param offerings
+     *            offerings
      */
     public void setOfferings(List<String> offerings) {
-        this.offerings = offerings;
+        this.offerings = Optional.ofNullable(offerings).orElseGet(LinkedList::new);
+    }
+
+    public void addOffering(String offering) {
+        this.offerings.add(offering);
     }
 
     /**
@@ -191,10 +211,15 @@ public class GetObservationRequest extends AbstractObservationRequest implements
     /**
      * Set procedures.
      *
-     * @param procedures procedures
+     * @param procedures
+     *            procedures
      */
     public void setProcedures(List<String> procedures) {
-        this.procedures = procedures;
+        this.procedures = Optional.ofNullable(procedures).orElseGet(LinkedList::new);
+    }
+
+    public void addProcedure(String procedure) {
+        this.procedures.add(procedure);
     }
 
     /**
@@ -210,7 +235,8 @@ public class GetObservationRequest extends AbstractObservationRequest implements
     /**
      * Add result filter(s).
      *
-     * @param resultFilter result filter(s)
+     * @param resultFilter
+     *            result filter(s)
      */
     @SuppressWarnings("rawtypes")
     public void setResultFilter(Filter resultFilter) {
@@ -239,7 +265,8 @@ public class GetObservationRequest extends AbstractObservationRequest implements
     /**
      * Set request as String.
      *
-     * @param requestString request as String
+     * @param requestString
+     *            request as String
      */
     public void setRequestString(String requestString) {
         this.requestString = requestString;
@@ -258,7 +285,8 @@ public class GetObservationRequest extends AbstractObservationRequest implements
     /**
      * Set spatial filter.
      *
-     * @param resultSpatialFilter spatial filter
+     * @param resultSpatialFilter
+     *            spatial filter
      */
     @Override
     public void setSpatialFilter(SpatialFilter resultSpatialFilter) {
@@ -268,7 +296,8 @@ public class GetObservationRequest extends AbstractObservationRequest implements
     /**
      * Create a copy of this request with defined observableProperties.
      *
-     * @param obsProps defined observableProperties
+     * @param obsProps
+     *            defined observableProperties
      *
      * @return SOS GetObservation request copy
      */
@@ -310,38 +339,20 @@ public class GetObservationRequest extends AbstractObservationRequest implements
         return procedures != null && !procedures.isEmpty();
     }
 
-    @Override
-    public boolean isSetFeatureOfInterest() {
-        return featureIdentifiers != null && !featureIdentifiers.isEmpty();
-    }
-
     public boolean isSetTemporalFilter() {
         return temporalFilters != null && !temporalFilters.isEmpty();
     }
 
-    @Override
-    public boolean isSetSpatialFilter() {
-        return spatialFilter != null;
-    }
-
     public boolean hasFirstLatestTemporalFilter() {
-        return temporalFilters.stream()
-                .map(TemporalFilter::getTime)
-                .filter(Functions.instanceOf(TimeInstant.class))
-                .map(Functions.cast(TimeInstant.class))
-                .map(TimeInstant::getIndeterminateValue)
+        return temporalFilters.stream().map(TemporalFilter::getTime).filter(Predicates.instanceOf(TimeInstant.class))
+                .map(Functions.cast(TimeInstant.class)).map(TimeInstant::getIndeterminateValue)
                 .anyMatch(this::isFirstLatest);
     }
 
     public List<IndeterminateValue> getFirstLatestTemporalFilter() {
-        return temporalFilters.stream()
-                .map(TemporalFilter::getTime)
-                .filter(Functions.instanceOf(TimeInstant.class))
-                .map(Functions.cast(TimeInstant.class))
-                .map(TimeInstant::getIndeterminateValue)
-                .filter(Objects::nonNull)
-                .filter(this::isFirstLatest)
-                .collect(toList());
+        return temporalFilters.stream().map(TemporalFilter::getTime).filter(Predicates.instanceOf(TimeInstant.class))
+                .map(Functions.cast(TimeInstant.class)).map(TimeInstant::getIndeterminateValue)
+                .filter(Objects::nonNull).filter(this::isFirstLatest).collect(toList());
     }
 
     public List<TemporalFilter> getNotFirstLatestTemporalFilter() {
@@ -363,18 +374,8 @@ public class GetObservationRequest extends AbstractObservationRequest implements
     }
 
     public boolean isEmpty() {
-        return !isSetOffering() &&
-               !isSetObservableProperty() &&
-               !isSetProcedure() &&
-               !isSetFeatureOfInterest() &&
-               !isSetTemporalFilter() &&
-               !isSetSpatialFilter();
-    }
-
-    @Override
-    public boolean hasSpatialFilteringProfileSpatialFilter() {
-        return isSetSpatialFilter() && getSpatialFilter().getValueReference()
-               .equals(Sos2Constants.VALUE_REFERENCE_SPATIAL_FILTERING_PROFILE);
+        return !isSetOffering() && !isSetObservableProperty() && !isSetProcedure() && !isSetFeatureOfInterest()
+                && !isSetTemporalFilter() && !isSetSpatialFilter();
     }
 
     public boolean isSetRequestString() {
@@ -409,11 +410,8 @@ public class GetObservationRequest extends AbstractObservationRequest implements
      * @return All {@link SwesExtensions} with {@link Filter}
      */
     public Set<Extension<?>> getFesFilterExtensions() {
-        return Optional.ofNullable(getExtensions())
-                .map(Extensions::stream)
-                .orElseGet(Stream::empty)
-                .filter(this::isFesFilterExtension)
-                .collect(toSet());
+        return Optional.ofNullable(getExtensions()).map(Extensions::stream).orElseGet(Stream::empty)
+                .filter(this::isFesFilterExtension).collect(toSet());
     }
 
     private boolean isFesFilterExtension(Extension<?> extension) {

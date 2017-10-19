@@ -18,24 +18,16 @@ package org.n52.shetland.ogc.om.values;
 
 import org.n52.shetland.ogc.UoM;
 import org.n52.shetland.ogc.om.values.visitor.ValueVisitor;
-import org.n52.shetland.ogc.om.values.visitor.VoidValueVisitor;
-import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
+import org.n52.shetland.ogc.swe.simpleType.SweBoolean;
 
-import com.fasterxml.jackson.databind.util.ArrayBuilders.BooleanBuilder;
 
 /**
  * Boolean measurement representation for observation
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
-public class BooleanValue implements Value<Boolean> {
-
-    /**
-     * Measurement value
-     */
-    private Boolean value;
-
+public class BooleanValue extends SweBoolean implements Value<Boolean> {
     /**
      * Unit of measure
      */
@@ -48,23 +40,25 @@ public class BooleanValue implements Value<Boolean> {
      *              Measurement value
      */
     public BooleanValue(Boolean value) {
-        this.value = value;
+        super();
+        super.setValue(value);
     }
 
     @Override
     public BooleanValue setValue(Boolean value) {
-        this.value = value;
+        super.setValue(value);
         return this;
-    }
-
-    @Override
-    public Boolean getValue() {
-        return value;
     }
 
     @Override
     public void setUnit(String unit) {
         this.unit = new UoM(unit);
+    }
+
+    @Override
+    public BooleanValue setUnit(UoM unit) {
+        this.unit = unit;
+        return this;
     }
 
     @Override
@@ -81,20 +75,14 @@ public class BooleanValue implements Value<Boolean> {
     }
 
     @Override
-    public BooleanValue setUnit(UoM unit) {
-        this.unit = unit;
-        return this;
+    public boolean isSetUnit() {
+        return getUnitObject() != null && !getUnitObject().isEmpty();
     }
 
     @Override
     public String toString() {
         return String
                 .format("BooleanValue [value=%s, unit=%s]", getValue(), getUnit());
-    }
-
-    @Override
-    public boolean isSetValue() {
-        return value != null;
     }
 
     @Override

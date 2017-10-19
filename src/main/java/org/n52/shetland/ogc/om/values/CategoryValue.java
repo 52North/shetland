@@ -18,17 +18,17 @@ package org.n52.shetland.ogc.om.values;
 
 import org.n52.shetland.ogc.UoM;
 import org.n52.shetland.ogc.om.values.visitor.ValueVisitor;
-import org.n52.shetland.ogc.om.values.visitor.VoidValueVisitor;
-import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
 import org.n52.shetland.ogc.swe.simpleType.SweCategory;
 
 /**
  * Category measurement representation for observation
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
-public class CategoryValue extends SweCategory implements Value<String> {
+public class CategoryValue
+        extends SweCategory
+        implements Value<String> {
 
     /**
      * constructor
@@ -62,7 +62,7 @@ public class CategoryValue extends SweCategory implements Value<String> {
      *            Unit of measure
      */
     public CategoryValue(String value, UoM unit) {
-       super(value, unit);
+        super(value, unit);
     }
 
     @Override
@@ -77,6 +77,12 @@ public class CategoryValue extends SweCategory implements Value<String> {
     }
 
     @Override
+    public CategoryValue setUnit(UoM unit) {
+        super.setUom(unit);
+        return this;
+    }
+
+    @Override
     public String getUnit() {
         return super.getUom();
     }
@@ -84,12 +90,6 @@ public class CategoryValue extends SweCategory implements Value<String> {
     @Override
     public UoM getUnitObject() {
         return super.getUomObject();
-    }
-
-    @Override
-    public CategoryValue setUnit(UoM unit) {
-       super.setUom(unit);
-       return this;
     }
 
     @Override

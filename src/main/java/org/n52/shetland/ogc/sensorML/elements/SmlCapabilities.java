@@ -27,7 +27,7 @@ import com.google.common.collect.Lists;
 /**
  * SOS internal representation of SensorML capabilities
  *
- * @since 4.0.0
+ * @since 1.0.0
  */
 public class SmlCapabilities extends AbstractSmlDataComponentContainer<SmlCapabilities> {
 
@@ -69,7 +69,7 @@ public class SmlCapabilities extends AbstractSmlDataComponentContainer<SmlCapabi
      */
     public List<SmlCapability> getCapabilities() {
         if (!hasCapabilities() && isSetAbstractDataComponents()) {
-            List<SmlCapability> capabilities = Lists.newArrayList();
+            List<SmlCapability> caps = Lists.newArrayList();
             for (SweAbstractDataComponent component : getAbstractDataComponents()) {
                 SmlCapability smlCapability = new SmlCapability();
                 if (component.isSetName()) {
@@ -78,11 +78,11 @@ public class SmlCapabilities extends AbstractSmlDataComponentContainer<SmlCapabi
                     smlCapability.setName(component.getDefinition());
                 }
                 smlCapability.setAbstractDataComponent(component);
-                capabilities.add(smlCapability);
+                caps.add(smlCapability);
             }
-            return capabilities;
+            return caps;
         }
-        return capabilities;
+        return this.capabilities;
     }
 
     /**

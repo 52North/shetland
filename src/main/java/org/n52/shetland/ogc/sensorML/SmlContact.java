@@ -22,7 +22,7 @@ import org.n52.shetland.ogc.gml.AbstractReferenceType;
  * @author <a href="mailto:e.h.juerrens@52north.org">Eike Hinderk
  *         J&uuml;rrens</a>
  *
- * @since 4.0.0
+ * @since 1.0.0
  */
 public abstract class SmlContact extends AbstractReferenceType {
 
@@ -44,8 +44,9 @@ public abstract class SmlContact extends AbstractReferenceType {
     }
 
     @Override
-    public void setRole(String role) {
+    public AbstractReferenceType setRole(String role) {
         this.role = new Role(role);
+        return this;
     }
 
     public void setRole(Role role) {

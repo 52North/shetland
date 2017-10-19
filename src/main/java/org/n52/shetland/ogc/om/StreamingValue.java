@@ -16,18 +16,18 @@
  */
 package org.n52.shetland.ogc.om;
 
-import org.n52.shetland.ogc.sos.Sos2Constants;
-import org.n52.shetland.ogc.sos.response.AbstractStreaming;
-import org.n52.shetland.util.GeometryTransformer;
-
 import javax.inject.Inject;
 
+import org.n52.shetland.ogc.UoM;
 import org.n52.shetland.ogc.gml.time.Time;
 import org.n52.shetland.ogc.gml.time.TimeInstant;
 import org.n52.shetland.ogc.om.values.Value;
+import org.n52.shetland.ogc.om.values.visitor.ValueVisitor;
 import org.n52.shetland.ogc.ows.OWSConstants.AdditionalRequestParams;
 import org.n52.shetland.ogc.ows.exception.OwsExceptionReport;
-//import org.n52.sos.util.GeometryHandler;
+import org.n52.shetland.ogc.sos.Sos2Constants;
+import org.n52.shetland.ogc.sos.response.AbstractStreaming;
+import org.n52.shetland.util.GeometryTransformer;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -37,18 +37,18 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * Abstract streaming value class
  *
  * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
- * @since 4.1.0
+ * @since 1.0.0
  *
  * @param <S>
  *            Entity type
  */
-public abstract class StreamingValue<S> extends AbstractStreaming {
-    private static final long serialVersionUID = -884370769373807775L;
+public abstract class StreamingValue<S>
+        extends AbstractStreaming {
     private Time phenomenonTime;
     private TimeInstant resultTime;
     private Time validTime;
     private String unit;
-    private boolean unitQueried = false;
+    private boolean unitQueried;
     private OmObservation observationTemplate;
     private GeometryTransformer geometryTransformer;
 
@@ -85,7 +85,8 @@ public abstract class StreamingValue<S> extends AbstractStreaming {
     }
 
     /**
-     * @param geometryTransformer the geometryTransformer to set
+     * @param geometryTransformer
+     *            the geometryTransformer to set
      */
     @Inject
     public void setGeometryTransformer(GeometryTransformer geometryTransformer) {
@@ -128,14 +129,50 @@ public abstract class StreamingValue<S> extends AbstractStreaming {
     }
 
     @Override
-    public Value<OmObservation> getValue() {
-        // TODO Auto-generated method stub
-        return null;
+    public Value<ObservationStream> getValue() {
+        // FIXME return a proper value
+        return new Value<ObservationStream>() {
+            @Override
+            public Value<ObservationStream> setValue(ObservationStream value) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public ObservationStream getValue() {
+                return StreamingValue.this;
+            }
+
+            @Override
+            public void setUnit(String unit) {
+                StreamingValue.this.setUnit(unit);
+            }
+
+            @Override
+            public Value<ObservationStream> setUnit(UoM unit) {
+                setUnit(unit.getUom());
+                return this;
+            }
+
+            @Override
+            public String getUnit() {
+                return StreamingValue.this.getUnit();
+            }
+
+            @Override
+            public UoM getUnitObject() {
+                return getUnit() == null ? null : new UoM(getUnit());
+            }
+
+            @Override
+            public <X, E extends Exception> X accept(ValueVisitor<X, E> visitor) throws E {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 
     @Override
-    public void setValue(Value<OmObservation> value) {
-        // TODO Auto-generated method stub
+    public void setValue(Value<ObservationStream> value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -197,11 +234,11 @@ public abstract class StreamingValue<S> extends AbstractStreaming {
             }
             if (observation.isSetParameter()) {
                 for (NamedValue<?> namedValue : observation.getParameter()) {
-                    if (getGeometryTransformer() != null && Sos2Constants.HREF_PARAMETER_SPATIAL_FILTERING_PROFILE.equals(namedValue.getName().getHref())) {
+                    if (getGeometryTransformer() != null && Sos2Constants.HREF_PARAMETER_SPATIAL_FILTERING_PROFILE
+                            .equals(namedValue.getName().getHref())) {
                         NamedValue<Geometry> spatialFilteringProfileParameter = (NamedValue<Geometry>) namedValue;
-                        spatialFilteringProfileParameter.getValue().setValue(
-                                getGeometryTransformer().transform(
-                                        spatialFilteringProfileParameter.getValue().getValue(), targetCRS));
+                        spatialFilteringProfileParameter.getValue().setValue(getGeometryTransformer()
+                                .transform(spatialFilteringProfileParameter.getValue().getValue(), targetCRS));
                     }
                 }
             }

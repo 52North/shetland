@@ -84,6 +84,24 @@ public class SensorML extends AbstractSensorML {
         return members != null && !members.isEmpty();
     }
 
+
+    @Override
+    public String getObservablePropertyName(String observableProperty) {
+        if (isWrapper()) {
+            return getMembers().iterator().next().getObservablePropertyName(observableProperty);
+        }
+        return null;
+    }
+
+
+    @Override
+    public String getObservablePropertyDescription(String observableProperty) {
+        if (isWrapper()) {
+            return getMembers().iterator().next().getObservablePropertyDescription(observableProperty);
+        }
+        return null;
+    }
+
     @Override
     public String getDefaultElementEncoding() {
         return SensorMLConstants.NS_SML;

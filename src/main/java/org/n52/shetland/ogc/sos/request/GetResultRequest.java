@@ -22,20 +22,18 @@ import java.util.Map;
 import org.n52.shetland.ogc.filter.SpatialFilter;
 import org.n52.shetland.ogc.filter.TemporalFilter;
 import org.n52.shetland.ogc.ows.service.OwsServiceRequest;
-import org.n52.shetland.ogc.sos.Sos2Constants;
 import org.n52.shetland.ogc.sos.SosConstants;
 import org.n52.shetland.util.CollectionHelper;
 
 import com.google.common.base.Strings;
 
-import org.n52.shetland.ogc.sos.Sos2Constants;
-import org.n52.shetland.ogc.sos.SosConstants;
-
 /**
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
-public class GetResultRequest extends OwsServiceRequest implements SpatialFeatureQueryRequest {
+public class GetResultRequest
+        extends OwsServiceRequest
+        implements SpatialFeatureQueryRequest {
 
     /**
      * Identifier for the observation template
@@ -134,11 +132,6 @@ public class GetResultRequest extends OwsServiceRequest implements SpatialFeatur
         this.featureIdentifiers = featureIdentifiers;
     }
 
-    @Override
-    public boolean isSetFeatureOfInterest() {
-        return CollectionHelper.isNotEmpty(getFeatureIdentifiers());
-    }
-
     public List<TemporalFilter> getTemporalFilter() {
         return temporalFilter;
     }
@@ -161,11 +154,6 @@ public class GetResultRequest extends OwsServiceRequest implements SpatialFeatur
         this.spatialFilter = spatialFilter;
     }
 
-    @Override
-    public boolean isSetSpatialFilter() {
-        return getSpatialFilter() != null;
-    }
-
     public Map<String, String> getNamespaces() {
         return namespaces;
     }
@@ -176,12 +164,5 @@ public class GetResultRequest extends OwsServiceRequest implements SpatialFeatur
 
     public boolean isSetNamespaces() {
         return CollectionHelper.isNotEmpty(getNamespaces());
-    }
-
-    @Override
-    public boolean hasSpatialFilteringProfileSpatialFilter() {
-        return isSetSpatialFilter()
-                && getSpatialFilter().getValueReference().equals(
-                        Sos2Constants.VALUE_REFERENCE_SPATIAL_FILTERING_PROFILE);
     }
 }

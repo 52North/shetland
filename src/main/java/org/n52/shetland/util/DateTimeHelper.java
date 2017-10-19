@@ -25,8 +25,8 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-
 import org.n52.janmayen.Times;
 import org.n52.shetland.ogc.gml.time.Time;
 import org.n52.shetland.ogc.gml.time.Time.TimeFormat;
@@ -45,29 +45,43 @@ import com.google.common.base.Strings;
 public final class DateTimeHelper {
 
     private static final DateTime ZERO = new DateTime(0000, 01, 01, 00, 00, 00, 000, DateTimeZone.UTC);
+
     /**
      * Response format for time.
      */
     private static String responseFormat;
+
     private static final String YMD_RESPONSE_FORMAT = "yyyy-MM-dd";
+
     private static final String YM_RESPONSE_FORMAT = "yyyy-MM";
+
     private static final String Y_RESPONSE_FORMAT = "yyyy";
+
     private static final int YEAR = 4;
+
     private static final int YEAR_MONTH = 7;
+
     private static final int YEAR_MONTH_DAY = 10;
+
     private static final int YEAR_MONTH_DAY_HOUR = 13;
+
     private static final int YEAR_MONTH_DAY_HOUR_MINUTE = 16;
+
     private static final int YEAR_MONTH_DAY_HOUR_MINUTE_SECOND = 19;
+
     private static final String Z = "Z";
+
     private static final double SECONDS_OF_DAY = 86400;
 
     /**
      * lease value
      */
     private static int lease;
+
     /**
      * Hidden utility constructor.
      */
+
     private DateTimeHelper() {
     }
 
@@ -81,16 +95,29 @@ public final class DateTimeHelper {
      *             If an error occurs.
      */
     public static DateTime parseIsoString2DateTime(final String timeString) throws DateTimeParseException {
+        return parseString2DateTime(timeString, null);
+    }
+
+    public static DateTime parseString2DateTime(final String timeString, final String dateFormat)
+            throws DateTimeParseException {
+        checkForValidity(timeString);
         if (Strings.isNullOrEmpty(timeString)) {
             return null;
         }
         try {
-            if (timeString.contains("+") || Pattern.matches("-\\d", timeString) || timeString.contains(Z) || timeString.contains("z")) {
+            if (!Strings.isNullOrEmpty(dateFormat)) {
+                if (checkOffset(timeString)) {
+                    return DateTimeFormat.forPattern(dateFormat).withOffsetParsed().parseDateTime(timeString);
+                } else {
+                    return DateTimeFormat.forPattern(dateFormat).withZone(DateTimeZone.UTC).parseDateTime(timeString);
+                }
+            }
+            if (checkOffset(timeString)) {
                 return ISODateTimeFormat.dateOptionalTimeParser().withOffsetParsed().parseDateTime(timeString);
             } else {
                 return ISODateTimeFormat.dateOptionalTimeParser().withZone(DateTimeZone.UTC).parseDateTime(timeString);
             }
-        } catch (RuntimeException uoe) {
+        } catch (final RuntimeException uoe) {
             throw new DateTimeParseException(timeString, uoe);
         }
     }
@@ -114,6 +141,18 @@ public final class DateTimeHelper {
         }
     }
 
+    private static void checkForValidity(final String timeString) throws DateTimeParseException {
+        if (!(timeString.length() == YEAR || timeString.length() == YEAR_MONTH
+                || timeString.length() >= YEAR_MONTH_DAY)) {
+            throw new DateTimeParseException(timeString);
+        }
+    }
+
+    private static boolean checkOffset(String timeString) {
+        return timeString.contains("+") || Pattern.matches("-\\d", timeString) || timeString.contains(Z)
+                || timeString.contains("z");
+    }
+
     /**
      * Formats the given Time to ISO 8601 string.
      *
@@ -132,12 +171,10 @@ public final class DateTimeHelper {
             } catch (DateTimeFormatException e) {
                 throw new IllegalArgumentException(e);
             }
-    //return formatDateTime2IsoString(((TimeInstant) time).getValue());
         } else if (time instanceof TimePeriod) {
             TimePeriod period = (TimePeriod) time;
-            return String.format("%s/%s",
-                                 formatDateTime2IsoString(period.getStart()),
-                                 formatDateTime2IsoString(period.getEnd()));
+            return String.format("%s/%s", formatDateTime2IsoString(period.getStart()),
+                    formatDateTime2IsoString(period.getEnd()));
         }
         throw new IllegalArgumentException(String.format("Given Time object is not valid: %s", time));
     }
@@ -181,14 +218,14 @@ public final class DateTimeHelper {
     public static String formatDateTime2String(DateTime dateTime, TimeFormat timeFormat)
             throws DateTimeFormatException {
         switch (timeFormat) {
-        case Y:
-            return formatDateTime2YearDateString(dateTime);
-        case YM:
-            return formatDateTime2YearMonthDateString(dateTime);
-        case YMD:
-            return formatDateTime2YearMonthDayDateStringYMD(dateTime);
-        default:
-            return formatDateTime2ResponseString(dateTime);
+            case Y:
+                return formatDateTime2YearDateString(dateTime);
+            case YM:
+                return formatDateTime2YearMonthDateString(dateTime);
+            case YMD:
+                return formatDateTime2YearMonthDayDateStringYMD(dateTime);
+            default:
+                return formatDateTime2ResponseString(dateTime);
         }
     }
 
@@ -201,17 +238,16 @@ public final class DateTimeHelper {
      * @throws DateTimeFormatException
      *             If an error occurs when formatting the {@link TimePosition}
      */
-    public static String formatDateTime2String(TimePosition timePosition)
-            throws DateTimeFormatException {
+    public static String formatDateTime2String(TimePosition timePosition) throws DateTimeFormatException {
         switch (timePosition.getTimeFormat()) {
-        case Y:
-            return formatDateTime2YearDateString(timePosition.getTime());
-        case YM:
-            return formatDateTime2YearMonthDateString(timePosition.getTime());
-        case YMD:
-            return formatDateTime2YearMonthDayDateStringYMD(timePosition.getTime());
-        default:
-            return formatDateTime2ResponseString(timePosition.getTime());
+            case Y:
+                return formatDateTime2YearDateString(timePosition.getTime());
+            case YM:
+                return formatDateTime2YearMonthDateString(timePosition.getTime());
+            case YMD:
+                return formatDateTime2YearMonthDayDateStringYMD(timePosition.getTime());
+            default:
+                return formatDateTime2ResponseString(timePosition.getTime());
         }
     }
 
@@ -238,16 +274,38 @@ public final class DateTimeHelper {
     }
 
     /**
+     * Formats a DateTime to a DAte using specified {@link DateTimeFormatter}
+     *
+     * @param dateTime
+     *            Time object
+     * @param formatter
+     *            the {@link DateTimeFormatter}
+     *
+     * @return Specified formatted time String
+     *
+     * @throws DateTimeFormatException
+     *             If an error occurs.
+     */
+    public static String formatDateTime2FormattedString(DateTime dateTime, DateTimeFormatter formatter)
+            throws DateTimeFormatException {
+        try {
+            return Times.encodeDateTime(dateTime, formatter);
+        } catch (IllegalArgumentException e) {
+            throw new DateTimeFormatException(e);
+        }
+    }
+
+    /**
      * formats a DateTime to a string with year-month-day.
      *
      * @param dateTime
      *            The DateTime.
      * @return Returns formatted time String.
      *
-     * @throws DateTimeFormatException
+     * @throws DateTimeFormatException,
+     *             If an error occurs.
      */
-    public static String formatDateTime2YearMonthDayDateStringYMD(DateTime dateTime)
-            throws DateTimeFormatException {
+    public static String formatDateTime2YearMonthDayDateStringYMD(DateTime dateTime) {
         try {
             DateTime result = checkAndGetDateTimeWithZoneUtc(dateTime);
             return result.toString(DateTimeFormat.forPattern(YMD_RESPONSE_FORMAT));
@@ -264,6 +322,7 @@ public final class DateTimeHelper {
      * @return Returns formatted time String.
      *
      * @throws DateTimeFormatException
+     *             If an error occurs.
      */
     public static String formatDateTime2YearMonthDateString(DateTime dateTime) throws DateTimeFormatException {
         try {
@@ -282,6 +341,7 @@ public final class DateTimeHelper {
      * @return Returns formatted time String.
      *
      * @throws DateTimeFormatException
+     *             If an error occurs.
      */
     public static String formatDateTime2YearDateString(DateTime dateTime) throws DateTimeFormatException {
         try {
@@ -318,7 +378,8 @@ public final class DateTimeHelper {
      *            Length of the time object
      * @return Modified time object.
      */
-    public static DateTime setDateTime2EndOfMostPreciseUnit4RequestedEndPosition(DateTime dateTime, int isoTimeLength) {
+    public static DateTime setDateTime2EndOfMostPreciseUnit4RequestedEndPosition(DateTime dateTime,
+            int isoTimeLength) {
         switch (isoTimeLength) {
             case YEAR:
                 return dateTime.plusYears(1).minusMillis(1);
@@ -337,8 +398,10 @@ public final class DateTimeHelper {
         }
     }
 
-      public static DateTime setDateTime2EndOfMostPreciseUnit4RequestedEndPosition(String time) throws DateTimeParseException {
-        return setDateTime2EndOfMostPreciseUnit4RequestedEndPosition(parseIsoString2DateTime(time), getTimeLengthBeforeTimeZone(time));
+    public static DateTime setDateTime2EndOfMostPreciseUnit4RequestedEndPosition(String time)
+            throws DateTimeParseException {
+        return setDateTime2EndOfMostPreciseUnit4RequestedEndPosition(parseIsoString2DateTime(time),
+                getTimeLengthBeforeTimeZone(time));
     }
 
     /**
@@ -387,6 +450,7 @@ public final class DateTimeHelper {
      * Make a new UTC DateTime from an object
      *
      * @param object
+     *            Object to make {@link DateTime}
      * @return DateTime, or null if object was null
      */
     public static DateTime makeDateTime(Object object) {
@@ -395,7 +459,9 @@ public final class DateTimeHelper {
 
     /**
      * Transforms the supplied {@code DateTime} to UTC.
-     * @param datetime the date time (may be {@code null})
+     *
+     * @param datetime
+     *            the date time (may be {@code null})
      * @return the UTC time (or {@code null}
      */
     public static DateTime toUTC(DateTime datetime) {
@@ -406,7 +472,9 @@ public final class DateTimeHelper {
      * Find the max of two dates (null safe)
      *
      * @param dt1
+     *            first {@link DateTime}
      * @param dt2
+     *            second {@link DateTime}
      * @return Max of two dates
      */
     public static DateTime max(DateTime dt1, DateTime dt2) {
@@ -436,7 +504,7 @@ public final class DateTimeHelper {
      * @return Days with precisions between the two {@link DateTime}s
      */
     public static double getDaysSinceWithPrecision(DateTime start, DateTime end) {
-        double value = Days.daysBetween(start, end).getDays() + end.getSecondOfDay()/SECONDS_OF_DAY;
+        double value = Days.daysBetween(start, end).getDays() + end.getSecondOfDay() / SECONDS_OF_DAY;
         return new BigDecimal(value).doubleValue();
     }
 

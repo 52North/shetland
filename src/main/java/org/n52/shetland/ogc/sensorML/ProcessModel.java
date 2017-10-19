@@ -17,7 +17,7 @@
 package org.n52.shetland.ogc.sensorML;
 
 /**
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
 public class ProcessModel extends AbstractProcess implements HasProcessMethod {
@@ -32,11 +32,6 @@ public class ProcessModel extends AbstractProcess implements HasProcessMethod {
         this.method = method;
     }
 
-    @Override
-    public boolean isSetMethod() {
-        return method != null;
-    }
-    
     @Override
     public String getDefaultElementEncoding() {
         return SensorMLConstants.NS_SML;

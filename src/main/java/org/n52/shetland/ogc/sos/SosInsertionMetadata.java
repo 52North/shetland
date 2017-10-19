@@ -24,7 +24,7 @@ import com.google.common.collect.Sets;
 /**
  * SOS internal representation of SOS insertion metadata
  *
- * @since 4.0.0
+ * @since 1.0.0
  */
 public class SosInsertionMetadata {
 
@@ -56,8 +56,9 @@ public class SosInsertionMetadata {
      * @param featureOfInterestTypes
      *            the featureOfInterestTypes to set
      */
-    public void setFeatureOfInterestTypes(Collection<String> featureOfInterestTypes) {
+    public SosInsertionMetadata setFeatureOfInterestTypes(Collection<String> featureOfInterestTypes) {
         this.featureOfInterestTypes = Sets.newHashSet(featureOfInterestTypes);
+        return this;
     }
 
     /**
@@ -71,7 +72,8 @@ public class SosInsertionMetadata {
      * @param observationTypes
      *            the observationTypes to set
      */
-    public void setObservationTypes(Collection<String> observationTypes) {
+    public SosInsertionMetadata setObservationTypes(Collection<String> observationTypes) {
         this.observationTypes = Sets.newHashSet(observationTypes);
+        return this;
     }
 }

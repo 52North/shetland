@@ -84,15 +84,12 @@ public class SweDataArray extends SweAbstractDataComponent {
     }
 
     public SweCount getElementCount() {
-        SweCount elementCount = new SweCount();
         if (isSetValues()) {
-            elementCount.setValue(values.size());
+            return new SweCount().setValue(values.size());
         } else if (isSetElementCount()) {
-            elementCount = this.elementCount;
-        } else {
-            elementCount.setValue(0);
+            return this.elementCount;
         }
-        return elementCount;
+        return new SweCount().setValue(0);
     }
 
     public SweAbstractEncoding getEncoding() {
@@ -122,7 +119,7 @@ public class SweDataArray extends SweAbstractDataComponent {
      * Adds the given block - a {@link List}<{@link String}> - add the end of
      * the current list of blocks
      *
-     * @param blockOfTokensToAddAtTheEnd
+     * @param blockOfTokensToAddAtTheEnd the blocks of tokens to add
      * @return <tt>true</tt> (as specified by {@link Collection#add}) <br />
      *         <tt>false</tt> if block could not be added
      */

@@ -16,11 +16,15 @@
  */
 package org.n52.shetland.ogc.om.values;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.n52.shetland.ogc.UoM;
 import org.n52.shetland.ogc.gml.AbstractFeature;
 import org.n52.shetland.ogc.gml.CodeWithAuthority;
+import org.n52.shetland.ogc.gml.time.Time;
+import org.n52.shetland.ogc.gml.time.TimePeriod;
 import org.n52.shetland.ogc.gwml.GWMLConstants;
 import org.n52.shetland.ogc.om.values.visitor.ValueVisitor;
 import org.n52.shetland.ogc.swe.SweDataRecord;
@@ -28,20 +32,26 @@ import org.n52.shetland.ogc.swe.SweField;
 import org.n52.shetland.ogc.swe.simpleType.SweQuantity;
 
 import com.google.common.collect.Lists;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 /**
  * Represents the GroundWaterML 2.0 GW_GeologyLogCoverage
  *
  * @author <a href="mailto:c.hollmann@52north.org">Carsten Hollmann</a>
- * @since 4.4.0
+ * @since 1.0.0
  *
  */
-public class ProfileValue extends AbstractFeature implements Value<List<ProfileLevel>> {
+public class ProfileValue
+        extends AbstractFeature
+        implements Value<List<ProfileLevel>> {
 
     private QuantityValue fromLevel;
-    private boolean queriedFromLevel = false;
+    private boolean queriedFromLevel;
     private QuantityValue toLevel;
-    private boolean queriedToLevel = false;
+    private boolean queriedToLevel;
     private List<ProfileLevel> values = Lists.newArrayList();
 
     public ProfileValue(String identifier) {
@@ -68,6 +78,11 @@ public class ProfileValue extends AbstractFeature implements Value<List<ProfileL
         return this;
     }
 
+    public ProfileValue addValues(List<ProfileLevel> value) {
+        this.values.addAll(value);
+        return this;
+    }
+
     @Override
     public List<ProfileLevel> getValue() {
         return values;
@@ -76,6 +91,12 @@ public class ProfileValue extends AbstractFeature implements Value<List<ProfileL
     @Override
     public void setUnit(String unit) {
 
+    }
+
+    @Override
+    public ProfileValue setUnit(UoM unit) {
+        // nothing to do
+        return this;
     }
 
     @Override
@@ -91,12 +112,6 @@ public class ProfileValue extends AbstractFeature implements Value<List<ProfileL
     @Override
     public boolean isSetUnit() {
         return false;
-    }
-
-    @Override
-    public ProfileValue setUnit(UoM unit) {
-        // nothing to do
-        return this;
     }
 
     @Override
@@ -221,6 +236,44 @@ public class ProfileValue extends AbstractFeature implements Value<List<ProfileL
             dataRecord.addField(new SweField("level_" + counter++, level.asDataRecord()));
         }
         return dataRecord;
+    }
+
+    public Time getPhenomenonTime() {
+        TimePeriod time = new TimePeriod();
+        for (ProfileLevel profileLevel : values) {
+            if (profileLevel.isSetPhenomenonTime()) {
+                time.extendToContain(profileLevel.getPhenomenonTime());
+            }
+        }
+        return time;
+    }
+
+    public boolean isSetGeometry() {
+        return isSetValue() && getValue().iterator().next().isSetLocation();
+    }
+
+    public Geometry getGeometry() {
+        if (isSetGeometry()) {
+            TreeMap<Time, Coordinate> map = new TreeMap<>();
+            int srid = -1;
+            for (ProfileLevel level : getValue()) {
+                if (level.isSetPhenomenonTime() && level.isSetLocation()) {
+                    if (srid < 0) {
+                        srid = level.getLocation().getSRID();
+                    }
+                    map.put(level.getPhenomenonTime(), level.getLocation().getCoordinate());
+                }
+            }
+            if (!map.isEmpty()) {
+                if (new HashSet<>(map.values()).size() == 1) {
+                    return getValue().iterator().next().getLocation();
+                } else {
+                    return new GeometryFactory(new PrecisionModel(), srid)
+                            .createLineString(map.values().toArray(new Coordinate[1]));
+                }
+            }
+        }
+        return null;
     }
 
 }

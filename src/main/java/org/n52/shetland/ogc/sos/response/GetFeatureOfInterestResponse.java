@@ -21,10 +21,11 @@ import org.n52.shetland.ogc.ows.service.OwsServiceResponse;
 import org.n52.shetland.ogc.sos.SosConstants;
 
 /**
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
-public class GetFeatureOfInterestResponse extends OwsServiceResponse {
+public class GetFeatureOfInterestResponse
+        extends OwsServiceResponse {
 
     private AbstractFeature abstractFeature;
 
@@ -38,6 +39,20 @@ public class GetFeatureOfInterestResponse extends OwsServiceResponse {
 
     public GetFeatureOfInterestResponse(String service, String version, String operationName) {
         super(service, version, operationName);
+    }
+
+    public GetFeatureOfInterestResponse(AbstractFeature abstractFeature) {
+        this.abstractFeature = abstractFeature;
+    }
+
+    public GetFeatureOfInterestResponse(String service, String version, AbstractFeature abstractFeature) {
+        this(service, version, SosConstants.Operations.GetFeatureOfInterest.name(), abstractFeature);
+    }
+
+    public GetFeatureOfInterestResponse(
+            String service, String version, String operationName, AbstractFeature abstractFeature) {
+        super(service, version, operationName);
+        this.abstractFeature = abstractFeature;
     }
 
     public AbstractFeature getAbstractFeature() {

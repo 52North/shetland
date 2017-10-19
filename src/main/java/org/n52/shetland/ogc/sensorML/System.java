@@ -20,16 +20,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.n52.shetland.ogc.sensorML.elements.SmlComponent;
+import org.n52.shetland.ogc.sensorML.elements.SmlConnection;
 
 /**
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
-public class System extends AbstractComponent implements HasComponents<System> {
+public class System
+        extends AbstractComponent
+        implements HasComponents<System>, HasConnections<System> {
 
-//    private EngineeringCRS spatialReferenceFrame;
+    // private EngineeringCRS spatialReferenceFrame;
 
     private final List<SmlComponent> components = new ArrayList<SmlComponent>(0);
+    private SmlConnection connections;
 
     @Override
     public List<SmlComponent> getComponents() {
@@ -53,11 +57,6 @@ public class System extends AbstractComponent implements HasComponents<System> {
     }
 
     @Override
-    public boolean isSetComponents() {
-        return components != null && !components.isEmpty();
-    }
-
-    @Override
     public boolean isAggragation() {
         return true;
     }
@@ -66,5 +65,14 @@ public class System extends AbstractComponent implements HasComponents<System> {
     public String getDefaultElementEncoding() {
         return SensorMLConstants.NS_SML;
     }
-    
+
+    public SmlConnection getConnections() {
+        return connections;
+    }
+
+    public System setConnections(SmlConnection connections) {
+        this.connections = connections;
+        return this;
+    }
+
 }
