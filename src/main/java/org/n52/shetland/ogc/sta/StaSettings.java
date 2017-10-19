@@ -44,20 +44,20 @@ public class StaSettings {
         private static final StaSettings instance = new StaSettings();
     }
 
-    /**
-     * Returns the base url for all SensorThings requests
-     * @return service url + binding endpoint + version
-     */
-    public String getBaseURL() {
-        return serviceURL + bindingEndpoint + "/" + StaConstants.VERSION_1_0 + "/";
-    }
-
     public String getBindingEndpoint() {
         return bindingEndpoint;
     }
 
     public void setBindingEndpoint(String endpoint) {
-        bindingEndpoint = endpoint;
+        this.bindingEndpoint = endpoint;
+    }
+
+    /**
+     * Returns the base url for all SensorThings requests
+     * @return service url + binding endpoint + version
+     */
+    public String getBaseURL() {
+        return serviceURL + "/" + bindingEndpoint + "/" + StaConstants.VERSION_1_0 + "/";
     }
 
     public String getServiceURL() {

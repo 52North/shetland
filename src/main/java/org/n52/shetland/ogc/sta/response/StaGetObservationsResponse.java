@@ -20,10 +20,10 @@ import org.n52.shetland.ogc.sta.StaConstants;
 import org.n52.shetland.ogc.sos.response.AbstractObservationResponse;
 
 /**
- * Response to a datastream GET request
+ * Response to a observation GET request
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
-public class GetDatastreamsResponse extends AbstractObservationResponse implements AbstractStaResponse {
+public class StaGetObservationsResponse extends AbstractObservationResponse implements AbstractStaResponse {
 
     private String serviceURL;
 
@@ -31,11 +31,11 @@ public class GetDatastreamsResponse extends AbstractObservationResponse implemen
     // responseFormat
     // resultModel
 
-    public GetDatastreamsResponse(String service, String version) {
-        super(service, version, StaConstants.EntitySet.Datastreams.toString());
+    public StaGetObservationsResponse(String service, String version) {
+        super(service, version, StaConstants.EntitySet.Observations.toString());
     }
 
-    public GetDatastreamsResponse(String service, String version, String operationName) {
+    public StaGetObservationsResponse(String service, String version, String operationName) {
         super(service, version, operationName);
     }
 

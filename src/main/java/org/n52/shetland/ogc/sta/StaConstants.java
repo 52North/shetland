@@ -16,6 +16,9 @@
  */
 package org.n52.shetland.ogc.sta;
 
+import java.net.URI;
+import org.n52.janmayen.http.HTTPMethods;
+
 /**
  * StaConstants holds all important and often used SensorThings constants (e.g.
  * names of the annotations, parameters and entities)
@@ -24,6 +27,7 @@ package org.n52.shetland.ogc.sta;
  */
 public interface StaConstants {
 
+    public static final String SERVICE_NAME = "STA";
     public static final String VERSION_1_0 = "v1.0";
 
     public static final String VALUES = "values";
@@ -42,10 +46,60 @@ public interface StaConstants {
 
     public static final String SPATIAL_ENCODING_TYPE_GEOJSON = "application/vnd.geo+json";
 
+
+    /**
+     * A STA path segment wraps one {@link Entity}, {@link EntitySet}, {@link Parameter} or and {@link Option} and an optional ID
+     *
+     */
+    public class PathSegment {
+
+        private final StaConstants.PathComponent component;
+        private final String id;
+
+        public PathSegment(StaConstants.PathComponent component, String id) {
+            this.component = component;
+            this.id = id;
+        }
+
+        public PathSegment(StaConstants.PathComponent component) {
+            this(component, null);
+        }
+
+        public StaConstants.PathComponent getComponent() {
+            return component;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public Class getComponentType() {
+            return component.getClass();
+        }
+
+        @Override
+        public String toString() {
+            return component.toString() + "(" + id + ")";
+        }
+    }
+
+    /**
+     * interface to mark all possible parts of a URL path
+     */
+    public interface PathComponent {
+
+        boolean contains(String string);
+    }
+
+    /**
+     * interface to mark all possible entity parts of a URL path
+     */
+    public interface EntityPathComponent extends PathComponent {}
+
     /**
      * names of the entities
      */
-    public enum Entity {
+    public enum Entity implements EntityPathComponent {
         Datastream,
         FeatureOfInterest,
         HistoricalLocation,
@@ -53,14 +107,35 @@ public interface StaConstants {
         Observation,
         ObservedProperty,
         Sensor,
-        Thing
+        Thing;
+
+        @Override
+        public boolean contains(String string) {
+
+            for (Entity value : Entity.values()) {
+                if (value.name().equals(string)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static boolean contains(Enum<Entity> entity, String string) {
+
+            for (Entity value : Entity.values()) {
+                if (value.name().equals(string)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     /**
      * names of the entities in plural form, as used for collections or to
      * request entities
      */
-    public enum EntitySet {
+    public enum EntitySet implements EntityPathComponent {
         Datastreams,
         FeaturesOfInterest,
         HistoricalLocations,
@@ -68,13 +143,24 @@ public interface StaConstants {
         Observations,
         ObservedProperties,
         Sensors,
-        Things
+        Things;
+
+        @Override
+        public boolean contains(String string) {
+
+            for (EntitySet value : EntitySet.values()) {
+                if (value.name().equals(string)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     /**
      * names of the entities' parameters
      */
-    public enum Parameter {
+    public enum Parameter implements PathComponent {
         definition,
         description,
         encodingType,
@@ -92,7 +178,38 @@ public interface StaConstants {
         resultTime,
         time,
         unitOfMeasurement,
-        validTime
+        validTime;
+
+        @Override
+        public boolean contains(String string) {
+
+            for (Parameter value : Parameter.values()) {
+                if (value.name().equals(string)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /**
+     * the options, as for entities, properties
+     */
+    public enum Option implements PathComponent {
+        $ref,
+        $value,
+        $batch;
+
+        @Override
+        public boolean contains(String string) {
+
+            for (Option value : Option.values()) {
+                if (value.name().equals(string)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     /**
@@ -111,5 +228,76 @@ public interface StaConstants {
         type,
         geometry,
         coordinates
+    }
+
+     public enum Operation {
+        POST_DATASTREAMS (HTTPMethods.GET, EntitySet.Datastreams),
+        GET_DATASTREAMS (HTTPMethods.GET, EntitySet.Datastreams),
+        PATCH_DATASTREAMS (HTTPMethods.PATCH, EntitySet.Datastreams),
+        DELETE_DATASTREAMS (HTTPMethods.DELETE, EntitySet.Datastreams),
+
+        POST_FEATURES_OF_INTEREST (HTTPMethods.POST, EntitySet.FeaturesOfInterest),
+        GET_FEATURES_OF_INTEREST (HTTPMethods.GET, EntitySet.FeaturesOfInterest),
+        PATCH_FEATURES_OF_INTEREST (HTTPMethods.PATCH, EntitySet.FeaturesOfInterest),
+        DELETE_FEATURES_OF_INTEREST (HTTPMethods.DELETE, EntitySet.FeaturesOfInterest),
+
+        POST_HISTORICAL_LOCATIONS (HTTPMethods.POST, EntitySet.HistoricalLocations),
+        GET_HISTORICAL_LOCATIONS (HTTPMethods.GET, EntitySet.HistoricalLocations),
+        PATCH_HISTORICAL_LOCATIONS (HTTPMethods.PATCH, EntitySet.HistoricalLocations),
+        DELETE_HISTORICAL_LOCATIONS (HTTPMethods.DELETE, EntitySet.HistoricalLocations),
+
+        POST_LOCATIONS (HTTPMethods.POST, EntitySet.Locations),
+        GET_LOCATIONS (HTTPMethods.GET, EntitySet.Locations),
+        PATCH_LOCATIONS (HTTPMethods.PATCH, EntitySet.Locations),
+        DELETE_LOCATIONS (HTTPMethods.DELETE, EntitySet.Locations),
+
+        POST_OBSERVATIONS (HTTPMethods.POST, EntitySet.Observations),
+        GET_OBSERVATIONS (HTTPMethods.GET, EntitySet.Observations),
+        PATCH_OBSERVATIONS (HTTPMethods.PATCH, EntitySet.Observations),
+        DELETE_OBSERVATIONS (HTTPMethods.DELETE, EntitySet.Observations),
+
+        POST_OBSERVED_PROPERTIES (HTTPMethods.POST, EntitySet.ObservedProperties),
+        GET_OBSERVED_PROPERTIES (HTTPMethods.GET, EntitySet.ObservedProperties),
+        PATCH_OBSERVED_PROPERTIES (HTTPMethods.PATCH, EntitySet.ObservedProperties),
+        DELETE_OBSERVED_PROPERTIES (HTTPMethods.DELETE, EntitySet.ObservedProperties),
+
+        POST_SENSORS (HTTPMethods.POST, EntitySet.Sensors),
+        GET_SENSORS (HTTPMethods.GET, EntitySet.Sensors),
+        PATCH_SENSORS (HTTPMethods.PATCH, EntitySet.Sensors),
+        DELETE_SENSORS (HTTPMethods.DELETE, EntitySet.Sensors),
+
+        POST_THINGS (HTTPMethods.POST, EntitySet.Things),
+        GET_THINGS (HTTPMethods.GET, EntitySet.Things),
+        PATCH_THINGS (HTTPMethods.PATCH, EntitySet.Things),
+        DELETE_THINGS (HTTPMethods.DELETE, EntitySet.Things);
+
+        private final String operator;
+        private final EntitySet resource;
+
+        Operation(String o, EntitySet r) {
+            this.operator = o;
+            this.resource = r;
+        }
+
+        public String getOperator() {
+            return operator;
+        }
+
+        public EntitySet getResource() {
+            return resource;
+        }
+    }
+
+    /**
+     * query options used as part of a query string
+     */
+    public enum QueryOption {
+        $filter,
+        $count,
+        $orderby,
+        $skip,
+        $top,
+        $expand,
+        $select
     }
 }
