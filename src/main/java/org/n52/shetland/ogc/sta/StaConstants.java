@@ -27,6 +27,8 @@ import org.n52.janmayen.http.HTTPMethods;
  */
 public interface StaConstants {
 
+    public static final String STA_BINDING_ENDPOINT = "/sta";
+
     public static final String SERVICE_NAME = "STA";
     public static final String VERSION_1_0 = "v1.0";
 

@@ -24,7 +24,6 @@ package org.n52.shetland.ogc.sta;
 public class StaSettings {
 
     private String serviceURL;
-    private String bindingEndpoint;
 
     // prevent other classes from creating instances
     private StaSettings() {}
@@ -44,20 +43,12 @@ public class StaSettings {
         private static final StaSettings instance = new StaSettings();
     }
 
-    public String getBindingEndpoint() {
-        return bindingEndpoint;
-    }
-
-    public void setBindingEndpoint(String endpoint) {
-        this.bindingEndpoint = endpoint;
-    }
-
     /**
      * Returns the base url for all SensorThings requests
      * @return service url + binding endpoint + version
      */
     public String getBaseURL() {
-        return serviceURL + "/" + bindingEndpoint + "/" + StaConstants.VERSION_1_0 + "/";
+        return serviceURL + StaConstants.STA_BINDING_ENDPOINT + "/" + StaConstants.VERSION_1_0 + "/";
     }
 
     public String getServiceURL() {
