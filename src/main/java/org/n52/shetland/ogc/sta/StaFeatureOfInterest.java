@@ -18,17 +18,13 @@ package org.n52.shetland.ogc.sta;
 
 import com.vividsolutions.jts.geom.Geometry;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * SensorThings FeatureOfInterest Entity
+ * SensorThings FeatureOfInterest entity
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
 public class StaFeatureOfInterest extends StaAbstractEntity {
-
-    //private static final Logger LOG = LoggerFactory.getLogger(StaFeatureOfInterest.class);
 
     private String name;
     private String description;

@@ -16,7 +16,6 @@
  */
 package org.n52.shetland.ogc.sta;
 
-import java.net.URI;
 import org.n52.janmayen.http.HTTPMethods;
 
 /**
@@ -255,6 +254,7 @@ public interface StaConstants {
 
         POST_OBSERVATIONS (HTTPMethods.POST, EntitySet.Observations),
         GET_OBSERVATIONS (HTTPMethods.GET, EntitySet.Observations),
+        GET_OBSERVATIONS_WITH_ID (HTTPMethods.GET, EntitySet.Observations),
         PATCH_OBSERVATIONS (HTTPMethods.PATCH, EntitySet.Observations),
         DELETE_OBSERVATIONS (HTTPMethods.DELETE, EntitySet.Observations),
 

@@ -28,6 +28,11 @@ import org.n52.shetland.ogc.sos.SosConstants;
 public class GetObservationByIdRequest extends AbstractObservationRequest {
 
     /**
+     * observation id as in DB, used by STA extension
+     */
+    private Long observationId;
+
+    /**
      * Observation identifier
      */
     private List<String> observationIdentifier;
@@ -67,4 +72,21 @@ public class GetObservationByIdRequest extends AbstractObservationRequest {
         this.observationIdentifier = observationIdentifier;
     }
 
+    /**
+     * Set observation id (used by STA extension)
+     *
+     * @return the observationId
+     */
+    public Long getObservationId() {
+        return observationId;
+    }
+
+    /**
+     * Get observation id (used by STA extension)
+     *
+     * @param observationId the observationId to set
+     */
+    public void setObservationId(Long observationId) {
+        this.observationId = observationId;
+    }
 }

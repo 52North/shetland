@@ -24,7 +24,7 @@ import org.n52.shetland.ogc.gml.time.TimePeriod;
 
 
 /**
- * SensorThings Observation Entity
+ * SensorThings Observation entity
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */

@@ -20,7 +20,8 @@ import org.n52.shetland.ogc.sta.StaConstants.Entity;
 import org.n52.shetland.ogc.sta.StaConstants.EntitySet;
 
 /**
- *
+ * Abstract SensorThings API entity
+ * 
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
 public abstract class StaAbstractEntity {

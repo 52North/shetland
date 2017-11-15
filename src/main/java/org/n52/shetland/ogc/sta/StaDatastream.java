@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SensorThings Datastream Entity
+ * SensorThings Datastream entity
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
