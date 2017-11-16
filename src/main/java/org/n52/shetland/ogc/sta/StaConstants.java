@@ -31,7 +31,7 @@ public interface StaConstants {
     public static final String SERVICE_NAME = "STA";
     public static final String VERSION_1_0 = "v1.0";
 
-    public static final String VALUES = "values";
+    public static final String VALUES = "value";
 
     public static final String ANNOTATION_ID = "@iot.id";
     public static final String ANNOTATION_COUNT = "@iot.count";
@@ -231,7 +231,17 @@ public interface StaConstants {
         coordinates
     }
 
+    /**
+     * names of the EntitySet list's parameters
+     */
+    public enum EntitySetListParameter {
+        name,
+        url
+    }
+
      public enum Operation {
+        GET_ENTITY_SETS(HTTPMethods.GET, null),
+
         POST_DATASTREAMS (HTTPMethods.GET, EntitySet.Datastreams),
         GET_DATASTREAMS (HTTPMethods.GET, EntitySet.Datastreams),
         PATCH_DATASTREAMS (HTTPMethods.PATCH, EntitySet.Datastreams),
