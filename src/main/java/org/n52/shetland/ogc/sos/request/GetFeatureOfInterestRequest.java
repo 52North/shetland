@@ -35,6 +35,11 @@ import org.n52.shetland.util.CollectionHelper;
 public class GetFeatureOfInterestRequest extends OwsServiceRequest {
 
     /**
+     * FOI id as in DB, used by STA extension
+     */
+    private Long featureId;
+
+    /**
      * FOI identifiers list
      */
     private List<String> featureIdentifiers = new ArrayList<>();
@@ -214,5 +219,23 @@ public class GetFeatureOfInterestRequest extends OwsServiceRequest {
 
     public boolean hasParameter() {
         return !hasNoParameter();
+    }
+
+    /**
+     * Set FOI id (used by STA extension)
+     *
+     * @return the featureId
+     */
+    public Long getFeatureId() {
+        return featureId;
+    }
+
+    /**
+     * Get FOI id (used by STA extension)
+     *
+     * @param featureId the featureId to set
+     */
+    public void setFeatureId(Long featureId) {
+        this.featureId = featureId;
     }
 }
