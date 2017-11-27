@@ -16,20 +16,37 @@
  */
 package org.n52.shetland.ogc.sta.response;
 
+import java.util.Set;
 import org.n52.shetland.ogc.sta.StaConstants;
+import org.n52.shetland.ogc.sta.StaSensor;
 
 /**
- * SensorThings GET response for empty resource
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
-public class StaGetEntitySetsResponse extends StaAbstractGetResponse {
+public class StaGetSensorsResponse extends StaAbstractGetResponse {
 
-    public StaGetEntitySetsResponse() {
-        super(StaConstants.Operation.GET_ENTITY_SETS.name());
+    private Set<StaSensor> sensors;
+
+    public StaGetSensorsResponse() {
+        super(StaConstants.Operation.GET_SENSORS.name());
     }
 
-    public StaGetEntitySetsResponse(String service, String version) {
-        super(service, version, StaConstants.Operation.GET_ENTITY_SETS.name());
+    public StaGetSensorsResponse(String service, String version) {
+        super(service, version, StaConstants.Operation.GET_SENSORS.name());
+    }
+
+    /**
+     * @return the sensors
+     */
+    public Set<StaSensor> getSensors() {
+        return sensors;
+    }
+
+    /**
+     * @param sensors the sensors to set
+     */
+    public void setSensors(Set<StaSensor> sensors) {
+        this.sensors = sensors;
     }
 }

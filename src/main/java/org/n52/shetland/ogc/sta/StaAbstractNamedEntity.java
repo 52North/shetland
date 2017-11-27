@@ -16,69 +16,47 @@
  */
 package org.n52.shetland.ogc.sta;
 
-import com.vividsolutions.jts.geom.Geometry;
-import java.util.List;
-
 /**
- * SensorThings FeatureOfInterest entity
+ * Abstract SensorThings API entity with a name and description
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
-public class StaFeatureOfInterest extends StaAbstractNamedEntity {
+public abstract class StaAbstractNamedEntity extends StaAbstractEntity {
 
     private String name;
     private String description;
 
-    // mandatory
-    private String encodingType;
-    private Geometry feature;
-
-    private List<String> observationList;
-
-    public StaFeatureOfInterest(Long id) {
-        super(id, StaConstants.Entity.FeatureOfInterest, StaConstants.EntitySet.FeaturesOfInterest);
+    protected StaAbstractNamedEntity(Long id, StaConstants.Entity entityName, StaConstants.EntitySet entityNamePlural) {
+        super(id, entityName, entityNamePlural);
     }
 
+    /**
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @param name the name to set
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * @return the description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * @param description the description to set
+     */
     public void setDescription(String description) {
         this.description = description;
     }
-    public String getEncodingType() {
-        return encodingType;
-    }
 
-    public void setEncodingType(String type) {
-        this.encodingType = type;
-    }
 
-    public Geometry getFeature() {
-        return feature;
-    }
-
-    public void setFeature(Geometry feature) {
-        this.feature = feature;
-    }
-
-    public List<String> getObservationList() {
-        return observationList;
-    }
-
-    public void setObservationList(List<String> observationList) {
-        this.observationList = observationList;
-    }
-
-    public boolean isSetObservationList() {
-        return observationList != null && !observationList.isEmpty();
-    }
 }

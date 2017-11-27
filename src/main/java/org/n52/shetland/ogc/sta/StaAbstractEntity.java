@@ -21,24 +21,23 @@ import org.n52.shetland.ogc.sta.StaConstants.EntitySet;
 
 /**
  * Abstract SensorThings API entity
- * 
+ *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
 public abstract class StaAbstractEntity {
 
-    private final String id;
+    private final Long id;
     private final Entity entityName;
     private final EntitySet entityNamePlural;
 
-    protected StaAbstractEntity(String id, Entity entityName, EntitySet entityNamePlural) {
+    protected StaAbstractEntity(Long id, Entity entityName, EntitySet entityNamePlural) {
 
         this.id = id;
         this.entityName = entityName;
         this.entityNamePlural = entityNamePlural;
     }
 
-
-    public String getId() {
+    public Long getId() {
         return this.id;
     }
 
@@ -55,7 +54,7 @@ public abstract class StaAbstractEntity {
      * @return path, e.g.
      */
     public String getSelfLink() {
-        return StaSettings.getInstance().getBaseURL() + this.entityNamePlural + "(" + this.id + ")";
+        return StaSettings.getInstance().getBaseURL() + getEntityNamePlural() + "(" + getId() + ")";
     }
 
     /**

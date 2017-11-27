@@ -37,6 +37,7 @@ public abstract class AbstractFeature extends AbstractGML implements HasDefaultE
 
     private String defaultEncoding;
     private String xml;
+    private Long featureId;
 
     public AbstractFeature(String identifier) {
         super(identifier);
@@ -102,5 +103,34 @@ public abstract class AbstractFeature extends AbstractGML implements HasDefaultE
 
     public <X> X accept(FeatureOfInterestVisitor<X> visitor) throws OwsExceptionReport {
         return null;
+    }
+
+    /**
+     * get feature id, as in DB, used by STA extension
+     *
+     * @return the featureId
+     */
+    public Long getFeatureId() {
+        return featureId;
+    }
+
+    /**
+     * set feature id, as in DB, used by STA extension
+     *
+     * @param featureId the featureId to set
+     * @return {@code this}
+     */
+    public AbstractFeature setFeatureId(Long featureId) {
+        this.featureId = featureId;
+        return this;
+    }
+
+    /**
+     * check wether feature id is set
+     *
+     * @return {@code true}, if feature id is set
+     */
+    public boolean isSetFeatureId() {
+        return featureId != null;
     }
 }

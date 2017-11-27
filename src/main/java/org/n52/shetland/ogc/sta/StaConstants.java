@@ -47,6 +47,8 @@ public interface StaConstants {
 
     public static final String SPATIAL_ENCODING_TYPE_GEOJSON = "application/vnd.geo+json";
 
+    public static final String SENSOR_ENCODING_TYPE_PDF = "application/pdf";
+    public static final String SENSOR_ENCODING_TYPE_SENSORML_20 = "http://www.opengis.net/doc/IS/SensorML/2.0";
 
     /**
      * A STA path segment wraps one {@link Entity}, {@link EntitySet}, {@link Parameter} or and {@link Option} and an optional ID

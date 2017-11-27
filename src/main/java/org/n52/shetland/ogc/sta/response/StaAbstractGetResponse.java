@@ -16,20 +16,21 @@
  */
 package org.n52.shetland.ogc.sta.response;
 
+import org.n52.shetland.ogc.ows.service.OwsServiceResponse;
 import org.n52.shetland.ogc.sta.StaConstants;
 
 /**
- * SensorThings GET response for empty resource
+ * Abstract super class for SensorThings API GET responses
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
-public class StaGetEntitySetsResponse extends StaAbstractGetResponse {
+public abstract class StaAbstractGetResponse extends OwsServiceResponse {
 
-    public StaGetEntitySetsResponse() {
-        super(StaConstants.Operation.GET_ENTITY_SETS.name());
+    public StaAbstractGetResponse(String operationName) {
+        super(StaConstants.SERVICE_NAME, StaConstants.VERSION_1_0, operationName);
     }
 
-    public StaGetEntitySetsResponse(String service, String version) {
-        super(service, version, StaConstants.Operation.GET_ENTITY_SETS.name());
+    public StaAbstractGetResponse(String service, String version, String operationName) {
+        super(service, version, operationName);
     }
 }

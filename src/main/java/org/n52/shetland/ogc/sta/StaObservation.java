@@ -46,7 +46,7 @@ public class StaObservation extends StaAbstractEntity {
      *
      * @param id observation id
      */
-    public StaObservation(String id) {
+    public StaObservation(Long id) {
         super(id, StaConstants.Entity.Observation, StaConstants.EntitySet.Observations);
     }
 

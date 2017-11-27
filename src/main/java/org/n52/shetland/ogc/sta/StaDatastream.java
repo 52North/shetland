@@ -56,7 +56,7 @@ public class StaDatastream extends StaAbstractEntity {
      * @param unit unit of measurement of contained observations
      * @param observation first observation
      */
-    public StaDatastream(String id, OmObservationConstellation observationConstellation, String observationType, UoM unit, StaObservation observation) {
+    public StaDatastream(Long id, OmObservationConstellation observationConstellation, String observationType, UoM unit, StaObservation observation) {
 
         this(id, observationConstellation);
         this.setObservationType(observationType);
@@ -71,7 +71,7 @@ public class StaDatastream extends StaAbstractEntity {
      * @param observationType type of contained observations
      * @param observation first observation
      */
-    public StaDatastream(String id, OmObservationConstellation observationConstellation, String observationType, StaObservation observation) {
+    public StaDatastream(Long id, OmObservationConstellation observationConstellation, String observationType, StaObservation observation) {
 
         this(id, observationConstellation);
         this.setObservationType(observationType);
@@ -83,7 +83,7 @@ public class StaDatastream extends StaAbstractEntity {
      * @param id new and unique ID for this Datastream
      * @param observationConstellation observation constellation to distinguish datastreams
      */
-    public StaDatastream(String id, OmObservationConstellation observationConstellation) {
+    public StaDatastream(Long id, OmObservationConstellation observationConstellation) {
 
         super(id, StaConstants.Entity.Datastream, StaConstants.EntitySet.Datastreams);
 
