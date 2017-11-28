@@ -19,24 +19,23 @@ package org.n52.shetland.ogc.sta.request;
 import org.n52.shetland.ogc.sta.StaConstants;
 
 /**
- * SensorThings GET request for sensors.
+ * SensorThings GET request for observed properties.
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
-public class StaGetSensorsRequest extends StaAbstractGetRequest {
+public class StaGetObservedPropertiesRequest extends StaAbstractGetRequest {
 
     private String name;
     private String description;
-    private String encodingType;
-    private Object metadata;
+    private String definition;
 
     private Long datastreamId;
 
-    public StaGetSensorsRequest() {
-        super(StaConstants.Operation.GET_SENSORS.name());
+    public StaGetObservedPropertiesRequest() {
+        super(StaConstants.Operation.GET_OBSERVED_PROPERTIES.name());
     }
-    public StaGetSensorsRequest(String service, String version) {
-        super(service, version, StaConstants.Operation.GET_SENSORS.name());
+    public StaGetObservedPropertiesRequest(String service, String version) {
+        super(service, version, StaConstants.Operation.GET_OBSERVED_PROPERTIES.name());
     }
 
     /**
@@ -68,31 +67,17 @@ public class StaGetSensorsRequest extends StaAbstractGetRequest {
     }
 
     /**
-     * @return the encodingType
+     * @return the definition
      */
-    public String getEncodingType() {
-        return encodingType;
+    public String getDefinition() {
+        return definition;
     }
 
     /**
-     * @param encodingType the encodingType to set
+     * @param definition the definition to set
      */
-    public void setEncodingType(String encodingType) {
-        this.encodingType = encodingType;
-    }
-
-    /**
-     * @return the metadata
-     */
-    public Object getMetadata() {
-        return metadata;
-    }
-
-    /**
-     * @param metadata the metadata to set
-     */
-    public void setMetadata(Object metadata) {
-        this.metadata = metadata;
+    public void setDefinition(String definition) {
+        this.definition = definition;
     }
 
     /**

@@ -18,36 +18,36 @@ package org.n52.shetland.ogc.sta.response;
 
 import java.util.Set;
 import org.n52.shetland.ogc.sta.StaConstants;
-import org.n52.shetland.ogc.sta.StaSensor;
+import org.n52.shetland.ogc.sta.StaObservedProperty;
 
 /**
- * SensortThings GET response for sensors.
+ * SensorThings GET response for observed properties.
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
-public class StaGetSensorsResponse extends StaAbstractGetResponse {
+public class StaGetObservedPropertiesResponse extends StaAbstractGetResponse {
 
-    private Set<StaSensor> sensors;
+    private Set<StaObservedProperty> observedProperies;
 
-    public StaGetSensorsResponse() {
-        super(StaConstants.Operation.GET_SENSORS.name());
+    public StaGetObservedPropertiesResponse() {
+        super(StaConstants.Operation.GET_OBSERVED_PROPERTIES.name());
     }
 
-    public StaGetSensorsResponse(String service, String version) {
-        super(service, version, StaConstants.Operation.GET_SENSORS.name());
-    }
-
-    /**
-     * @return the sensors
-     */
-    public Set<StaSensor> getSensors() {
-        return sensors;
+    public StaGetObservedPropertiesResponse(String service, String version) {
+        super(service, version, StaConstants.Operation.GET_OBSERVED_PROPERTIES.name());
     }
 
     /**
-     * @param sensors the sensors to set
+     * @return the observedProperies
      */
-    public void setSensors(Set<StaSensor> sensors) {
-        this.sensors = sensors;
+    public Set<StaObservedProperty> getObservedProperties() {
+        return observedProperies;
+    }
+
+    /**
+     * @param observedProperies the observed properies to set
+     */
+    public void setObservedProperties(Set<StaObservedProperty> observedProperies) {
+        this.observedProperies = observedProperies;
     }
 }
