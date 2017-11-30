@@ -16,10 +16,12 @@
  */
 package org.n52.shetland.ogc.sta;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.vividsolutions.jts.geom.Envelope;
+import java.util.HashSet;
+import java.util.Set;
 import org.n52.shetland.ogc.UoM;
-import org.n52.shetland.ogc.om.OmObservationConstellation;
+import org.n52.shetland.ogc.gml.time.TimePeriod;
+import org.n52.shetland.ogc.om.ObservationStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,119 +30,54 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:m.kiesow@52north.org">Martin Kiesow</a>
  */
-public class StaDatastream extends StaAbstractEntity {
+public class StaDatastream extends StaAbstractNamedEntity {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaDatastream.class);
 
-    private String thing; // Datastream(this)/Thing
-    private String sensor; // Datastream(this)/Sensor
-    private String observedProperty; // Datastream(this)/ObservedProperty
-
-    private String name;
-    private String description;
     private String observationType; // ValueCode
     private UoM unitOfMeasurement;
-    private String observedArea; // GM_Envelope[0..1]
-    private String phenomenonTime; // TM_Period[0..1]
-    private String resultTime; // TM_Period[0..1]
+    private Envelope observedArea;
+    private TimePeriod phenomenonTime;
+    private TimePeriod resultTime;
 
-    private List<StaObservation> observationList = new ArrayList<>();
+    private StaThing thing;
+    private StaSensor sensor;
+    private StaObservedProperty observedProperty;
+    private Set<StaObservation> observations;
 
-    private OmObservationConstellation observationConstellation;
+    private ObservationStream observationStream;
 
     /**
-     * Create a Datastream from the first observation
+     * Create a Datastream
+     *
      * @param id unique datastream id
-     * @param observationConstellation observation constellation to distinguish datastreams
-     * @param observationType type of contained observations
-     * @param unit unit of measurement of contained observations
-     * @param observation first observation
      */
-    public StaDatastream(Long id, OmObservationConstellation observationConstellation, String observationType, UoM unit, StaObservation observation) {
-
-        this(id, observationConstellation);
-        this.setObservationType(observationType);
-        this.setUnitOfMeasurement(unit);
-        addObservation(observation);
-    }
-
-    /**
-     * Create a Datastream from the first observation
-     * @param id unique datastream id
-     * @param observationConstellation observation constellation to distinguish datastreams
-     * @param observationType type of contained observations
-     * @param observation first observation
-     */
-    public StaDatastream(Long id, OmObservationConstellation observationConstellation, String observationType, StaObservation observation) {
-
-        this(id, observationConstellation);
-        this.setObservationType(observationType);
-        addObservation(observation);
-    }
-
-    /**
-     * Create a Datastream from the first observation
-     * @param id new and unique ID for this Datastream
-     * @param observationConstellation observation constellation to distinguish datastreams
-     */
-    public StaDatastream(Long id, OmObservationConstellation observationConstellation) {
-
+    public StaDatastream(Long id) {
         super(id, StaConstants.Entity.Datastream, StaConstants.EntitySet.Datastreams);
-
-        this.observationConstellation = observationConstellation;
-
-        // TODO optional: expand entity; not used by DatastreamEncoder, yet
-        //this.sensor
-        //this.thing
-        //this.observedProperty
-
-        this.name = "automatically generated Datastream";
-        this.description = "automatically generated Datastream";
-
-        // TODO these have to be derived from the contained observations
-        // observedArea
-        // phenomenonTime
-        // resultTime
     }
 
-    public String getThing() {
+    public StaThing getThing() {
         return thing;
     }
 
-    public void setThing(String thing) {
+    public void setThing(StaThing thing) {
         this.thing = thing;
     }
 
-    public String getSensor() {
+    public StaSensor getSensor() {
         return sensor;
     }
 
-    public void setSensor(String sensor) {
+    public void setSensor(StaSensor sensor) {
         this.sensor = sensor;
     }
 
-    public String getObservedProperty() {
+    public StaObservedProperty getObservedProperty() {
         return observedProperty;
     }
 
-    public void setObservedProperty(String observedProperty) {
+    public void setObservedProperty(StaObservedProperty observedProperty) {
         this.observedProperty = observedProperty;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getObservationType() {
@@ -159,52 +96,77 @@ public class StaDatastream extends StaAbstractEntity {
         this.unitOfMeasurement = unitOfMeasurement;
     }
 
-    public String getObservedArea() {
+    public Envelope getObservedArea() {
         return observedArea;
     }
 
-    public void setObservedArea(String observedArea) {
+    public void setObservedArea(Envelope observedArea) {
         this.observedArea = observedArea;
     }
 
-    public String getPhenomenonTime() {
+    public TimePeriod getPhenomenonTime() {
         return phenomenonTime;
     }
 
-    public void setPhenomenonTime(String phenomenonTime) {
+    public void setPhenomenonTime(TimePeriod phenomenonTime) {
         this.phenomenonTime = phenomenonTime;
     }
 
-    public String getResultTime() {
+    public TimePeriod getResultTime() {
         return resultTime;
     }
 
-    public void setResultTime(String resultTime) {
+    public void setResultTime(TimePeriod resultTime) {
         this.resultTime = resultTime;
     }
 
-    public List<StaObservation> getObservationList() {
-        return observationList;
-    }
-
-    public void setObservationList(List<StaObservation> observationList) {
-        this.observationList = observationList;
-    }
-
-    public boolean isSetObservationList() {
-       return observationList != null && !observationList.isEmpty();
+    /**
+     * @return the observations
+     */
+    public Set<StaObservation> getObservations() {
+        return observations;
     }
 
     /**
-     * Add a SensorThings observation to this datastream
-     * @param observation the new observation
+     * @param observations the observations to set
+     */
+    public void setObservations(Set<StaObservation> observations) {
+        this.observations = observations;
+    }
+
+    /**
+     * @param observation the observation to add
      */
     public void addObservation(StaObservation observation) {
-        this.observationList.add(observation);
+
+        if (this.observations == null) {
+            this.observations = new HashSet<>();
+        }
+        this.observations.add(observation);
     }
 
-    public OmObservationConstellation getObservationConstellation() {
-        return this.observationConstellation;
+    /**
+     * @param observations the observations to add
+     */
+    public void addObservations(Set<StaObservation> observations) {
+
+        if (this.observations == null) {
+            this.observations = new HashSet<>();
+        }
+        this.observations.addAll(observations);
     }
 
+    /**
+     * @return the observationStream
+     */
+    public ObservationStream getObservationStream() {
+        return observationStream;
+    }
+
+    /**
+     * @param observationStream the observationStream to set
+     */
+    public void setObservationStream(ObservationStream observationStream) {
+        this.observationStream = observationStream;
+    }
 }
