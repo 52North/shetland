@@ -24,6 +24,7 @@ import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -36,13 +37,25 @@ import com.vividsolutions.jts.io.WKTReader;
  */
 public class JTSHelper {
 
-    public static final String WKT_POLYGON = "Polygon";
-    public static final String WKT_POINT = "Point";
     public static final CoordinateFilter COORDINATE_SWITCHING_FILTER = coord -> {
         double tmp = coord.x;
         coord.x = coord.y;
         coord.y = tmp;
     };
+
+    public static final String WKT_POLYGON = "Polygon";
+    public static final String WKT_POINT = "Point";
+
+    /**
+     * WKT format String template for 3D points: <code>Point(%s %s %s)</code>.
+     */
+    public static final String FORMAT_POINT_3D = WKT_POINT + "(%s %s %s)";
+
+    /**
+     * WKT format String template for 2D points: <code>Point(%s %s)</code>.
+     */
+    public static final String FORMAT_POINT_2D = WKT_POINT + "(%s %s)";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(JTSHelper.class);
 
     protected JTSHelper() {
@@ -209,6 +222,41 @@ public class JTSHelper {
 
     public static boolean isNotEmpty(Geometry geometry) {
         return geometry != null && !geometry.isEmpty();
+    }
+
+    /**
+     * Creates a JTS Point from given coordinate values
+     * @param longitude longitude to set
+     * @param latitude latitude to set
+     * @param altitude altitude to set
+     * @param epsgCode EPSG code of the CRS to use
+     * @return a JTS Point with the coordinates in the order Longitude, Latitude, Altitude.
+     * @throws ParseException if the WKT could not be created.
+     *
+     * @see #createGeometryFromWKT(String, int)
+     * @see #FORMAT_POINT_3D
+     */
+    public static Point createPoint(double longitude, double latitude, double altitude, int epsgCode)
+            throws ParseException {
+        return (Point) JTSHelper.createGeometryFromWKT(
+                String.format(altitude == Double.NaN? FORMAT_POINT_2D : FORMAT_POINT_3D, longitude, latitude, altitude),
+                epsgCode);
+    }
+
+    /**
+     * Creates a JTS Point from given coordinate values
+     * @param longitude longitude to set
+     * @param latitude latitude to set
+     * @param epsgCode EPSG code of the CRS to use
+     * @return a JTS Point with the coordinates in the order Longitude, Latitude.
+     * @throws ParseException if the WKT could not be created.
+     *
+     * @see #createGeometryFromWKT(String, int)
+     * @see #FORMAT_POINT_2D
+     */
+    public static Point createPoint(double longitude, double latitude, int epsgCode)
+            throws ParseException {
+        return createPoint(longitude, latitude, Double.NaN, epsgCode);
     }
 
 }
