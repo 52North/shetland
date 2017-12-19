@@ -21,6 +21,9 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -33,26 +36,29 @@ public class JTSHelperTest {
     private double latitude = 52.502;
     private double altitude = 60;
 
+    // JTS: x,y,z
+    // WGS84: lat (y), long(x), alt(z)
+
     @Test
-    public void testCreatePoint3DWGS84() throws ParseException {
+    public void testCreatePoint3DWGS84() throws ParseException, NoSuchAuthorityCodeException, FactoryException {
         int epsgCode = 4979;
         Point jtsPoint = JTSHelper.createPoint(longitude, latitude, altitude, epsgCode);
 
         assertThat(jtsPoint, notNullValue());
-        assertThat(jtsPoint.getX(), is(longitude));
-        assertThat(jtsPoint.getY(), is(latitude));
+        assertThat(jtsPoint.getX(), is(latitude));
+        assertThat(jtsPoint.getY(), is(longitude));
         assertThat(jtsPoint.getCoordinates()[0].z, is(altitude));
         assertThat(jtsPoint.getSRID(), is(epsgCode));
     }
 
     @Test
-    public void testCreatePoint2DWGS84() throws ParseException {
+    public void testCreatePoint2DWGS84() throws ParseException, NoSuchAuthorityCodeException, FactoryException {
         int epsgCode = 4326;
         Point jtsPoint = JTSHelper.createPoint(longitude, latitude, epsgCode);
 
         assertThat(jtsPoint, notNullValue());
-        assertThat(jtsPoint.getX(), is(longitude));
-        assertThat(jtsPoint.getY(), is(latitude));
+        assertThat(jtsPoint.getX(), is(latitude));
+        assertThat(jtsPoint.getY(), is(longitude));
         assertThat(jtsPoint.getCoordinates()[0].z, is(Double.NaN));
         assertThat(jtsPoint.getSRID(), is(epsgCode));
     }

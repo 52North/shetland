@@ -16,6 +16,10 @@
  */
 package org.n52.shetland.util;
 
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.cs.CoordinateSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,37 +229,67 @@ public class JTSHelper {
     }
 
     /**
-     * Creates a JTS Point from given coordinate values
+     * Creates a JTS Point from given coordinate values in the order defined by the EPSG code. Hence,
+     * ensure the EPSG code is correct and latitude is latitude and longitude is longitude.
      * @param longitude longitude to set
      * @param latitude latitude to set
      * @param altitude altitude to set
      * @param epsgCode EPSG code of the CRS to use
-     * @return a JTS Point with the coordinates in the order Longitude, Latitude, Altitude.
+     * @return a JTS Point with the coordinates in the order extracted from EPSG database.
      * @throws ParseException if the WKT could not be created.
+     * @throws FactoryException if the creation of an internal object fails
+     * @throws NoSuchAuthorityCodeException if the epsgCode could not be matched to any entry in the EPSG database
      *
      * @see #createGeometryFromWKT(String, int)
      * @see #FORMAT_POINT_3D
      */
     public static Point createPoint(double longitude, double latitude, double altitude, int epsgCode)
-            throws ParseException {
-        return (Point) JTSHelper.createGeometryFromWKT(
-                String.format(altitude == Double.NaN? FORMAT_POINT_2D : FORMAT_POINT_3D, longitude, latitude, altitude),
-                epsgCode);
+            throws ParseException, NoSuchAuthorityCodeException, FactoryException {
+        CoordinateSystem cs = CRS.decode("EPSG:" + epsgCode).getCoordinateSystem();
+        double[] coordinateValues = new double[cs.getDimension()];
+        for (int i = 0; i < cs.getDimension(); i++) {
+            switch (cs.getAxis(i).getAbbreviation()) {
+                case "Lat":
+                    coordinateValues[i] = latitude;
+                    break;
+                case "Long":
+                    coordinateValues[i] = longitude;
+                    break;
+                case "h":
+                    coordinateValues[i] = altitude;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Axis abbreviation '" +
+                            cs.getAxis(i).getAbbreviation() +
+                            "' not supported.");
+            }
+
+        }
+        String wkt = "";
+        if (Double.isNaN(altitude)) {
+            wkt = String.format(FORMAT_POINT_2D, coordinateValues[0], coordinateValues[1]);
+        } else if (cs.getDimension() > 2) {
+            wkt = String.format(FORMAT_POINT_3D, coordinateValues[0], coordinateValues[1] , coordinateValues[2]);
+        }
+        return (Point) JTSHelper.createGeometryFromWKT(wkt, epsgCode);
     }
 
     /**
-     * Creates a JTS Point from given coordinate values
+     * Creates a JTS Point from given coordinate values in the order defined by the EPSG code. Hence,
+     * ensure the EPSG code is correct and latitude is latitude and longitude is longitude.
      * @param longitude longitude to set
      * @param latitude latitude to set
      * @param epsgCode EPSG code of the CRS to use
-     * @return a JTS Point with the coordinates in the order Longitude, Latitude.
+     * @return a JTS Point with the coordinates in the order extracted from EPSG database.
      * @throws ParseException if the WKT could not be created.
+     * @throws FactoryException if the creation of an internal object fails
+     * @throws NoSuchAuthorityCodeException if the epsgCode could not be matched to any entry in the EPSG database
      *
      * @see #createGeometryFromWKT(String, int)
      * @see #FORMAT_POINT_2D
      */
     public static Point createPoint(double longitude, double latitude, int epsgCode)
-            throws ParseException {
+            throws ParseException, NoSuchAuthorityCodeException, FactoryException {
         return createPoint(longitude, latitude, Double.NaN, epsgCode);
     }
 
